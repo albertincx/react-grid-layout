@@ -20,7 +20,7 @@ var Puzzler = function(
   var sizes = {
     'small': 40,
     'normal': 60,
-    'big': 80,
+    'big': 90,
   };
 
   if (!(type in sizes)) {
@@ -40,7 +40,7 @@ var Puzzler = function(
 
   var pieceWidth = sizes[type];
   var pieceHeight = sizes[type];
-
+  // console.log(pieceWidth, pieceHeight);
   // here we're waiting for image load, so prepare array for pieces
   var pieces = [],
     pieceRelations = [];
@@ -48,7 +48,6 @@ var Puzzler = function(
   var xCount, yCount;
 
   image.onload = function() {
-
     xCount = Math.floor(image.width / pieceWidth);
     yCount = Math.floor(image.height / pieceHeight);
 
@@ -86,7 +85,8 @@ var Puzzler = function(
       if (y < yCount) {
         setTimeout(CALL_FUN, 10);
       } else {
-        onComplete(pieces, xCount, yCount, pieceHeight, {getContainer: self.getContainer, containers: self.containers});
+        onComplete(pieces, xCount, yCount, pieceHeight,
+          { getContainer: self.getContainer, containers: self.containers });
       }
     };
     window.setTimeout(CALL_FUN, 10);
@@ -101,15 +101,17 @@ var Puzzler = function(
 
   function makePiece(x, y, pieceWidth, pieceHeight, ret, ww) {
 
-    var pieceRelation
+    var pieceRelation;
     if (!ret) {
       pieceRelation = [
         !def(pieceRelations[y][x][0]) ? (pieceRelations[y][x][0] = y === 0
           ? null
           : relation()) : pieceRelations[y][x][0], //top,
-        !def(pieceRelations[y][x][1]) ? (pieceRelations[y][x][1] = x === xCount -
+        !def(pieceRelations[y][x][1]) ? (pieceRelations[y][x][1] = x ===
+        xCount -
         1 ? null : relation()) : pieceRelations[y][x][1], //left
-        !def(pieceRelations[y][x][2]) ? (pieceRelations[y][x][2] = y === yCount -
+        !def(pieceRelations[y][x][2]) ? (pieceRelations[y][x][2] = y ===
+        yCount -
         1 ? null : relation()) : pieceRelations[y][x][2], //bottom
         !def(pieceRelations[y][x][3]) ? (pieceRelations[y][x][3] = x === 0
           ? null
@@ -138,12 +140,14 @@ var Puzzler = function(
     var canvas = document.createElement('canvas');
     canvas.width = ww || 250;
     // canvas.width = pieceWidth;
-    canvas.height = 210;
+    canvas.height = window.getContainerFuncHeight(true);
+
     // canvas.height = pieceHeight;
     var canvasContext = canvas.getContext('2d');
 
     let xW = canvas.width;
-    let xH = 210;
+    let xH = canvas.height;
+    // console.log(xH, xW)
     // xW = width;
     // xH = height;
     canvasContext.drawImage(
@@ -182,7 +186,7 @@ var Puzzler = function(
     return {
       pieces: piece,
       container: container,
-    }
+    };
   }
 
   function relation() {
