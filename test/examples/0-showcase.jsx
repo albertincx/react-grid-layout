@@ -10,7 +10,6 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
  * This layout demonstrates how to use a grid with a dynamic number of elements.
  */
 let getContainerFunc;
-const heights = [{ d: 2, s: 0.8, m: 1 }, { d: 210, s: 80, m: 150 }];
 
 /**
  * Shuffles array in place.
@@ -26,12 +25,13 @@ function shuffle(a) {
     }
     return a;
 }
+const heights = [{ d: 2, s: 0.8, m: 1 }, { d: 200, s: 80, m: 100 }];
 
 window.getContainerFuncHeight = (canvas = false) => {
     const _h = heights[canvas ? 1 : 0];
     let h = _h.d;
     if (window.innerWidth < 1200) {
-        const mini = window.innerWidth < 500 ? _h.s : false;
+        const mini = window.innerWidth < 600 ? _h.s : false;
         const small = window.innerWidth > 600 ? _h.m : false;
         h = mini || small || h;
     } else {
@@ -49,13 +49,9 @@ export default class AddRemoveLayout extends React.Component {
 
     constructor(props) {
         super(props);
-        // const arr = Array.from({length: 10}).fill(1);
-        const arr = Array.from({ length: 1 }).fill(1);
-        let items = [];
-
         this.state = {
-            items: items,
-            newCounter: items.length,
+            items: [],
+            newCounter: 0,
             containers: []
         };
         this.refsC = {};
@@ -72,8 +68,6 @@ export default class AddRemoveLayout extends React.Component {
     }
 
     rerender = (upd = false) => {
-        // console.log(getContainerFunc);
-        // this.shuffle();
         if (getContainerFunc) {
             if (upd) {
                 let items = [];
@@ -88,18 +82,6 @@ export default class AddRemoveLayout extends React.Component {
             }
         }
     };
-    getRandomInt = (min, max) => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    shuffle = () => {
-        const { containers } = this.state;
-        if (containers.length) {
-            shuffle(containers);
-        }
-        return containers;
-    };
-
     canvasDraw = () => {
         const { containers } = this.state;
         const ww = this.refsC[`testn0`].clientWidth;
@@ -170,7 +152,7 @@ export default class AddRemoveLayout extends React.Component {
                 w: 2,
                 h: this.getHeight(),
                 minH: 0.8,
-                isResizable: false
+                isResizable: false,
             });
             return items;
         }
@@ -216,6 +198,7 @@ export default class AddRemoveLayout extends React.Component {
                             </button>
                     ) : null}
                     <ResponsiveReactGridLayout
+                            margin={[3,3]}
                             onLayoutChange={this.onLayoutChange}
                             onBreakpointChange={this.onBreakpointChange}
                             {...this.props}
