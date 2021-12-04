@@ -39,17 +39,6 @@ function PuzzleGame(node, url, debugMode, callbState) {
 
       for (var j = 0; j < countY; j++) {
         for (var i = 0; i < countX; i++) {
-
-          // var container = pieces[j][i].container;
-
-          // container.setAttribute('data-puzzle-x', i);
-          // container.setAttribute('data-puzzle-y', j);
-
-          // node.appendChild(container);
-
-          // container.style.top = y + 'px';
-          // container.style.left = x + 'px';
-
           x += size;
         }
 
@@ -58,7 +47,7 @@ function PuzzleGame(node, url, debugMode, callbState) {
       }
 
     }, function(complete, all) {
-      node.innerHTML = 'Prepare pieces: ' + complete + '/' + all;
+      // node.innerHTML = 'Prepare pieces: ' + complete + '/' + all;
     }, debugMode);
 }
 

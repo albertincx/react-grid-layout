@@ -1,0 +1,144 @@
+body {
+    padding: 20px;
+    margin: 0;
+}
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.new {
+    margin: 0 auto;
+    top: 40%;
+    position: absolute;
+    width: 100px;
+}
+.button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10rem;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.15rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+.button:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0cf;
+    border-radius: 10rem;
+    z-index: -2;
+}
+.button:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: #008fb3;
+    transition: all 0.3s;
+    border-radius: 10rem;
+    z-index: -1;
+}
+.button:hover {
+    color: #fff;
+}
+.button:hover:before {
+    width: 100%;
+}
+
+/* optional reset for presentation */
+* {
+    font-family: Arial;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.container {
+    padding-top: 50px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 2rem;
+    color: #777;
+}
+
+span {
+    display: block;
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    color: #777;
+}
+span a {
+    font-size: 0.7rem;
+    color: #999;
+    text-decoration: underline;
+}
+
+
+.progress-6 {
+    padding-top: 0;
+    width:120px;
+    height:22px;
+    border-radius: 20px;
+    color:#514b82;
+    border:2px solid;
+    /*position: relative;*/
+}
+.progress-6::before {
+    content:"";
+    position: absolute;
+    margin:2px;
+    inset:0 100% 0 0;
+    border-radius: inherit;
+    background:currentColor;
+    animation:p6 1.5s infinite;
+}
+@keyframes p6 {
+    100% {inset:0}
+}
+
+.progress-9 {
+    padding-top: 0;
+    --r1: 154%;
+    --r2: 68.5%;
+    width:60px;
+    height:60px;
+    border-radius: 50%;
+    background:
+            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%) center left,
+            radial-gradient(var(--r1) var(--r2) at bottom,#269af2 79.5%,#0000 80%) center center,
+            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%) center right,
+            #ccc;
+    background-size: 50.5% 220%;
+    background-position: -100% 0%,0% 0%,100% 0%;
+    background-repeat:no-repeat;
+    animation:p9 2s infinite linear;
+}
+@keyframes p9 {
+    33%  {background-position:    0% 33% ,100% 33% ,200% 33% }
+    66%  {background-position: -100%  66%,0%   66% ,100% 66% }
+    100% {background-position:    0% 100%,100% 100%,200% 100%}
+}
+.game {
+    /*padding: 20px;*/
+}
+@media (max-width: 350px) {
+    .game {
+        /*padding: 0;*/
+    }
+}

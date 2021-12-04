@@ -141,7 +141,6 @@ var Puzzler = function(
     canvas.width = ww || 250;
     // canvas.width = pieceWidth;
     canvas.height = window.getContainerFuncHeight(true);
-
     // canvas.height = pieceHeight;
     var canvasContext = canvas.getContext('2d');
 
@@ -225,44 +224,6 @@ Puzzler.prototype = {
     'left': 'right',
     'top': 'bottom',
     'bottom': 'top',
-  },
-
-  /**
-   * Delete duplicate connectors by its index.
-   * Piece[3][4]['left'] delete Piece[3][3]['right'].
-   * @param container
-   */
-  _deleteDuplicateConnectorsByIndex: function(container) {
-    var pieces = container.pieces;
-
-    for (var piece1Index in pieces) {
-      var piece1 = pieces[piece1Index],
-        piece1Neighbours = piece1.neighbours;
-
-      for (var connectionSide in piece1Neighbours) {
-        var connectorParams = piece1Neighbours[connectionSide];
-        var connectorSide = this._oppositeSide[connectionSide];
-        var neighbour = pieces[this.pieceKey(connectorParams.attachToX,
-          connectorParams.attachToY)];
-        if (neighbour && neighbour.neighbours &&
-          neighbour.neighbours[connectorSide]) {
-          delete neighbour.neighbours[connectorSide];
-          delete piece1Neighbours[connectionSide];
-        }
-      }
-
-    }
-  },
-
-  /**
-   * Returns a random integer between min and max
-   * @see https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/Math/random
-   * @param {Number} min
-   * @param {Number} max
-   * @return {Number}
-   */
-  getRandomInt: function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   },
 
   knownJigsaws: {},
