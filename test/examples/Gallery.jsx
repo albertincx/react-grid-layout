@@ -7,31 +7,16 @@ require("./Puzzler/PuzzleGame").default();
  * This layout demonstrates how to use a grid with a dynamic number of elements.
  */
 
-const heights = [{ d: 2, s2: 0.6, s: 0.9, m: 1, m2: 1.5 }, { d: 200, s2: 60, s: 90, m: 100, m2: 150 }];
-
-window.getContainerFuncHeight = (canvas = false) => {
-    const _h = heights[canvas ? 1 : 0];
-    let h = _h.d;
-    if (window.innerWidth < 1200) {
-        // const mini2 = window.innerWidth < 400 ? _h.s2 : false;
-        const mini = window.innerWidth < 600 ? _h.s : false;
-        const small = window.innerWidth > 600 ? _h.m : false;
-        const small2 = window.innerWidth > 800 ? _h.m2 : false;
-        h = small2 || small || mini || h;
-    } else {
-        h = _h.d;
-    }
-    return h;
-};
-
-const namesRUS = ["Мультики", "Животные"];
+const namesRUS = ["Мультики", "Животные", "Цветы"];
 const names = [
     "cartoon",
-    "animal"
+    "animal",
+    "flowers"
 ];
 const srcs = {
     cartoon: [1, 2, 3, 4, 5],
-    animal: [1]
+    animal: [1, 2, 3],
+    flowers: [1, 2]
 };
 
 export default class Gallery extends React.Component {
@@ -58,7 +43,7 @@ export default class Gallery extends React.Component {
 
     createItems = () => {
         let items = [];
-        for (let i = 0; i < 2; i += 1) {
+        for (let i = 0; i < 3; i += 1) {
             items = this.onAddItem(items, true, i);
         }
         this.setState({ items });
