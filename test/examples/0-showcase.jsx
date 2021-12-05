@@ -70,10 +70,7 @@ export default class AddRemoveLayout extends React.Component {
     }
 
     componentDidMount() {
-
         if (Puzzler.support()) {
-            var form = document.getElementById("form");
-            form.addEventListener("submit", this.onSubmit, false);
         } else {
             document.body.innerHTML = "<h1>Sorry, but you browser doesn't support \"Canvas\". Please, use modern browser such as Firefox, Opera, Safari or Chrome</h1>";
         }
@@ -248,6 +245,7 @@ export default class AddRemoveLayout extends React.Component {
         this.setState({soundOn: !this.state.soundOn})
     }
     render() {
+        console.log('');
         return (
                 <div className="center2">
                     {this.state.items.length === 0 ? (

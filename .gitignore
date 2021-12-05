@@ -7,8 +7,8 @@ npm-debug.log
 build/
 .idea
 # Ignore built example files
-examples/*.html
-examples/*.js
+#examples/*.html
+#examples/*.js
 !examples/generate.js
 !examples/vars.js
 .vscode

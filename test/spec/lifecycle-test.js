@@ -6,9 +6,9 @@ import _ from "lodash";
 import TestUtils from "react-dom/test-utils";
 import ReactGridLayout from "../../lib/ReactGridLayout";
 import ResponsiveReactGridLayout from "../../lib/ResponsiveReactGridLayout";
-import BasicLayout from "../examples/1-basic";
+import BasicLayout from "../../dd/1-basic";
 import ShowcaseLayout from "../examples/0-showcase";
-import DroppableLayout from "../examples/15-drag-from-outside";
+import DroppableLayout from "../../dd/15-drag-from-outside";
 import deepFreeze from "../util/deepFreeze";
 import { mount } from "enzyme";
 

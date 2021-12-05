@@ -9,35 +9,13 @@
     <script src="commons.js"></script>
     <script src="<%= index ;%>-<%= source ;%>.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <title>RGL Example <%= index ;%> - <%= title ;%></title>
+    <title>Puzzle Fun</title>
 </head>
 <body>
 <div id="content"></div>
-
-<form action="" id="form" style="display: none">
-    <fieldset>
-        <legend>Puzzle params</legend>
-        Get image from url: <input type="text" name="url" value="img.jpg" />
-        Puzzle size: <select name="size">
-            <option value="small">small</option>
-            <option value="normal" selected="selected">normal</option>
-            <option value="big">big</option>
-        </select>
-
-        Debug mode: <input type="checkbox" name="debug" value="on" />
-
-        <input type="submit" value="Start" id="startGame" />
-    </fieldset>
-    <fieldset>
-        <legend>Jigsaw type:</legend>
-        Classic: <input type="checkbox" name="jigsaws" value="classic" checked="checked" />
-        | Rectangle: <input type="checkbox" name="jigsaws" value="rectangle" />
-        | Arc: <input type="checkbox" name="jigsaws" value="arc" />
-    </fieldset>
-</form>
 <audio controls id="audio" style="display: none">
-    <source src="untitled.ogg" type="audio/ogg">
     <source src="untitled.wav" type="audio/mpeg">
+    <source src="untitled.mp3" type="audio/mp3">
     Your browser does not support the audio element.
 </audio>
 </body>
