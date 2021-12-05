@@ -81,6 +81,7 @@ type Props = {
     minH: number,
     maxH: number,
     i: string,
+    baseName: string,
 
     resizeHandles?: ResizeHandleAxis[],
     resizeHandle?: ResizeHandle,
@@ -163,6 +164,7 @@ export default class GridItem extends React.Component<Props, State> {
         resizeHandle: resizeHandleType,
 
         // Functions
+        baseName: PropTypes.string,
         onDragStop: PropTypes.func,
         onDragStart: PropTypes.func,
         onDrag: PropTypes.func,

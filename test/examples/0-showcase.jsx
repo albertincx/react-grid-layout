@@ -197,14 +197,18 @@ export default class AddRemoveLayout extends React.Component {
             const arr = [];
             let items = [];
             Object.keys(containers).forEach(i => {
-                arr.push(containers[i]);
+                containers[i].baseName = i;
+                arr.push({ ...containers[i] });
             });
-            for (let i = 0; i < arr.length; i += 1) {
-                items = this.onAddItem(items);
-            }
             const baseArr = [...arr];
             shuffle(arr);
-            this.setState({ items, containers: arr, loader: false, baseArr }, () => {
+            const winScheme = {};
+            for (let i = 0; i < arr.length; i += 1) {
+                winScheme[`${arr[i].baseName.replace("item", "")}`] = `n${i}`;
+                items = this.onAddItem(items, arr[i].baseName);
+            }
+            window.confetti.stop();
+            this.setState({ winScheme, items, containers: arr, loader: false, baseArr }, () => {
                 this.rerender();
             });
         });
@@ -221,17 +225,15 @@ export default class AddRemoveLayout extends React.Component {
         return h;
     };
 
-    onDragStop(c, t, s) {
-        // console.log(t);
-        // console.log(s);
-        // console.log(c,this.state.baseArr);
+    onDragStop(c, old, newL) {
+        // console.log(c[i].i);
         // console.log(this.props);
         // console.log(_.isEqual(this.state.items, c));
         // console.log(_.isEqual(this.state.baseArr, c));
         this.play();
     }
 
-    onAddItem = (items = false) => {
+    onAddItem = (items = false, baseName = "") => {
         if (items && Array.isArray(items)) {
             items = items.concat({
                 i: "n" + items.length,
@@ -241,7 +243,8 @@ export default class AddRemoveLayout extends React.Component {
                 h: this.getHeight(),
                 minH: 0.8,
                 isResizable: false,
-                onDragStop: this.onDragStop
+                onDragStop: this.onDragStop,
+                baseName
             });
             return items;
         }
@@ -302,7 +305,6 @@ export default class AddRemoveLayout extends React.Component {
     };
 
     render() {
-        console.log("");
         return (
                 <div className="center2">
                     {this.state.items.length === 0 ? (
