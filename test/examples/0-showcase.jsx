@@ -1,7 +1,9 @@
 import React from "react";
+import _ from "lodash";
+
 import WidthProvider from "../../lib/components/WidthProvider";
 import Responsive from "../../lib/ResponsiveReactGridLayout";
-import _ from "lodash";
+import Gallery from "./Gallery";
 
 require("./Puzzler/Puzzler").default();
 require("./Puzzler/PuzzleGame").default();
@@ -110,7 +112,11 @@ export default class AddRemoveLayout extends React.Component {
 
     onBack = (e) => {
         e.preventDefault();
-        this.setState({ items: [] });
+        this.setState({ items: [], img: '' });
+    };
+    onBack2 = (e) => {
+        e.preventDefault();
+        this.setState({ items: [], dir: false });
     };
     onSubmit = (e) => {
         if (e) {
@@ -118,7 +124,7 @@ export default class AddRemoveLayout extends React.Component {
         }
         this.setState({ loader: true });
         // this.style.display = 'none';
-        var url = this.state.img || "cartoon/img3.jpg";
+        var url = this.state.img || "cartoon/img5.jpg";
         var dest = document.createElement("div");
         dest.id = "dest";
         dest.className = "dest";
@@ -150,7 +156,7 @@ export default class AddRemoveLayout extends React.Component {
             return wh;
         }
         const h = window.getContainerFuncHeight();
-        console.log('h ', h)
+        console.log("h ", h);
         return h;
     };
     onAddItem = (items = false) => {
@@ -201,27 +207,49 @@ export default class AddRemoveLayout extends React.Component {
         this.setState({ layout: layout });
     }
 
+    onSelect = (el) => {
+        let field = "img";
+        if (!el.src) {
+            field = "dir";
+        }
+        console.log(el);
+        this.setState({ [field]: el.src ? el.src : el }, () => {
+            if (el.src) {
+                this.onSubmit();
+            }
+        });
+    };
+
     render() {
         return (
                 <div className="center2">
                     {this.state.items.length === 0 ? (
                             <div className="center">
-                                {this.state.loader ? <div className="new container progress-6" /> : (
-                                        <div className="new container">
-                                            <a href="#" className="button" onClick={this.onSubmit}>Начать</a>
+                                {this.state.loader ? <div className="new container progress-6" /> : null}
+                                {/*        <div className="new container">*/}
+                                {/*            <a href="#" className="button" onClick={this.onSubmit}>Начать</a>*/}
+                                {/*        </div>*/}
+                                {/*)}*/}
+                                {this.state.dir ? (
+                                        <div className="center">
+                                            <button className="btn text text-3" onClick={this.onBack2}>
+                                                Назад
+                                            </button>
                                         </div>
-                                )}
+                                ) : null}
                             </div>
                     ) : (
                             <div className="center">
-                                <button className="btn" onClick={this.onBack}>
+                                <button className="btn text text-3" onClick={this.onBack}>
                                     Назад
                                 </button>
-                                <button className="btn" onClick={this.onSubmit}>
+                                <button className="btn text text-3" onClick={this.onSubmit}>
                                     перемешать
                                 </button>
                             </div>
                     )}
+                    <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
+
                     <div className="game">
                         <ResponsiveReactGridLayout
                                 margin={[3, 3]}
