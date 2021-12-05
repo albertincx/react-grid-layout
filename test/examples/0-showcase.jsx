@@ -7,6 +7,7 @@ import Gallery from "./Gallery";
 
 require("./Puzzler/Puzzler").default();
 require("./Puzzler/PuzzleGame").default();
+require("./conf").default();
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 /**
  * This layout demonstrates how to use a grid with a dynamic number of elements.
@@ -55,16 +56,21 @@ export default class AddRemoveLayout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            baseArr: [],
             items: [],
             newCounter: 0,
             containers: [],
-            loader: false
+            loader: false,
+            soundOn: true,
+            win: false,
         };
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
+        this.onDragStop = this.onDragStop.bind(this);
     }
 
     componentDidMount() {
+
         if (Puzzler.support()) {
             var form = document.getElementById("form");
             form.addEventListener("submit", this.onSubmit, false);
@@ -112,10 +118,12 @@ export default class AddRemoveLayout extends React.Component {
 
     onBack = (e) => {
         e.preventDefault();
-        this.setState({ items: [], img: '' });
+        this.play();
+        this.setState({ items: [], img: '', win: false });
     };
     onBack2 = (e) => {
         e.preventDefault();
+        this.play();
         this.setState({ items: [], dir: false });
     };
     onSubmit = (e) => {
@@ -142,8 +150,9 @@ export default class AddRemoveLayout extends React.Component {
             for (let i = 0; i < arr.length; i += 1) {
                 items = this.onAddItem(items);
             }
+            const baseArr = [...arr];
             shuffle(arr);
-            this.setState({ items, containers: arr, loader: false }, () => {
+            this.setState({ items, containers: arr, loader: false, baseArr }, () => {
                 this.rerender();
             });
         });
@@ -156,12 +165,20 @@ export default class AddRemoveLayout extends React.Component {
             return wh;
         }
         const h = window.getContainerFuncHeight();
-        console.log("h ", h);
+        // console.log("h ", h);
         return h;
     };
+
+    onDragStop(c, t, s){
+        // console.log(t);
+        // console.log(s);
+        // console.log(c,this.state.baseArr);
+        // console.log(this.props);
+        // console.log(_.isEqual(this.state.items, c));
+        // console.log(_.isEqual(this.state.baseArr, c));
+        this.play();
+    }
     onAddItem = (items = false) => {
-        /*eslint no-console: 0*/
-        // console.log(this.refsC)
         if (items && Array.isArray(items)) {
             items = items.concat({
                 i: "n" + items.length,
@@ -170,11 +187,11 @@ export default class AddRemoveLayout extends React.Component {
                 w: 2,
                 h: this.getHeight(),
                 minH: 0.8,
-                isResizable: false
+                isResizable: false,
+                onDragStop: this.onDragStop
             });
             return items;
         }
-        // console.log("adding", "n" + this.state.newCounter);
 
         this.setState({
             // Add a new item. It must have a unique key!
@@ -192,7 +209,6 @@ export default class AddRemoveLayout extends React.Component {
 
     // We're using the cols coming back from this to calculate where to add new items.
     onBreakpointChange(breakpoint, cols) {
-        console.log("tes", cols, window.innerWidth);
         this.setState({
             breakpoint: breakpoint,
             cols: cols,
@@ -212,14 +228,25 @@ export default class AddRemoveLayout extends React.Component {
         if (!el.src) {
             field = "dir";
         }
-        console.log(el);
+        this.play();
         this.setState({ [field]: el.src ? el.src : el }, () => {
             if (el.src) {
                 this.onSubmit();
             }
         });
     };
-
+    play = () => {
+        if (!this.state.soundOn) {
+            return;
+        }
+        const a = document.getElementById('audio');
+        if (a) {
+            a.play();
+        }
+    }
+    onSoundToggle = () => {
+        this.setState({soundOn: !this.state.soundOn})
+    }
     render() {
         return (
                 <div className="center2">
@@ -239,19 +266,31 @@ export default class AddRemoveLayout extends React.Component {
                                 ) : null}
                             </div>
                     ) : (
-                            <div className="center">
+                            <div className="center3">
                                 <button className="btn text text-3" onClick={this.onBack}>
                                     Назад
                                 </button>
                                 <button className="btn text text-3" onClick={this.onSubmit}>
                                     перемешать
                                 </button>
+                                <div onClick={this.onSoundToggle} className={this.state.soundOn ? 'sound sound-on' : 'sound sound-off'} />
                             </div>
                     )}
                     <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
-
+                    {this.state.win ? (
+                            <div className="wrapper">
+                                <div className="modal">
+                                    <span className="emoji round">🏆</span>
+                                    <h1>Congratulation, Ahmed</h1>
+                                    <a href="#" className="modal-btn">Celebrate</a>
+                                </div>
+                                <div id="confetti-wrapper">
+                                </div>
+                            </div>
+                    ) : null}
                     <div className="game">
                         <ResponsiveReactGridLayout
+                                onDragStop={this.onDragStop}
                                 margin={[3, 3]}
                                 onLayoutChange={this.onLayoutChange}
                                 onBreakpointChange={this.onBreakpointChange}

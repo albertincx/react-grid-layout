@@ -31,7 +31,7 @@ const names = [
 ];
 const srcs = {
     cartoon: [1, 2, 3, 4, 5],
-    animal: [1],
+    animal: [1]
 };
 
 export default class Gallery extends React.Component {
@@ -52,7 +52,21 @@ export default class Gallery extends React.Component {
         this.refsC = {};
     }
 
+    componentDidMount() {
+        this.createItems();
+    }
+
+    createItems = () => {
+        let items = [];
+        for (let i = 0; i < 2; i += 1) {
+            items = this.onAddItem(items, true, i);
+        }
+        this.setState({ items });
+    };
+
     componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>) {
+        // console.log("test", this.state, this.props);
+        // this.props.cb();
         if (this.props.dir !== prevProps.dir) {
             if (this.props.dir) {
                 let items = [];
@@ -61,21 +75,12 @@ export default class Gallery extends React.Component {
                 }
                 this.setState({ items });
             } else {
-                let items = [];
-                for (let i = 0; i < 2; i += 1) {
-                    items = this.onAddItem(items, true, i);
-                }
-                this.setState({ items });
+                this.createItems();
             }
             return;
         }
         if (!this.state.items.length) {
-            console.log("test");
-            let items = [];
-            for (let i = 0; i < 2; i += 1) {
-                items = this.onAddItem(items, true, i);
-            }
-            this.setState({ items });
+            this.createItems();
         }
     }
 
@@ -84,7 +89,6 @@ export default class Gallery extends React.Component {
         return (
                 <div key={i} data-grid={el}>
                     <div ref={eel => this.refsC[`test${i}`] = eel} onClick={e => {
-                        console.log("click");
                         this.props.onSelect(el);
                     }}>
                         <div className="dir">
@@ -105,7 +109,6 @@ export default class Gallery extends React.Component {
 
     onAddItem = (items = false, dir = false, i) => {
         /*eslint no-console: 0*/
-        console.log(this.props.onSelect);
         if (items && Array.isArray(items)) {
             items = items.concat({
                 ii: i,
@@ -120,7 +123,6 @@ export default class Gallery extends React.Component {
             });
             return items;
         }
-        // console.log("adding", "n" + this.state.newCounter);
 
         this.setState({
             // Add a new item. It must have a unique key!
@@ -137,7 +139,6 @@ export default class Gallery extends React.Component {
     };
 
     render() {
-        console.log(this.state.items);
         if (this.props.img) {
             return false;
         }
@@ -148,14 +149,10 @@ export default class Gallery extends React.Component {
                                 Выберите категорию
                             </div>
                     ) : null}
-                    <div className={`game ${this.props.dir ? ' even': ''}`}>
+                    <div className={`game ${this.props.dir ? " even" : ""}`}>
                         {_.map(this.state.items, el => this.createElement(el))}
                     </div>
                 </div>
         );
     }
-}
-
-if (process.env.STATIC_EXAMPLES === true) {
-    import("../test-hook.jsx").then(fn => fn.default(AddRemoveLayout));
 }
