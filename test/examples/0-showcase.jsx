@@ -61,8 +61,11 @@ export default class AddRemoveLayout extends React.Component {
             newCounter: 0,
             containers: [],
             loader: false,
+            show: true,
             soundOn: true,
             win: false,
+            timeStart: new Date().getTime(),
+            timeEnd: 0
         };
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
@@ -70,7 +73,9 @@ export default class AddRemoveLayout extends React.Component {
     }
 
     componentDidMount() {
+        // eslint-disable-next-line no-undef
         if (Puzzler.support()) {
+            //
         } else {
             document.body.innerHTML = "<h1>Sorry, but you browser doesn't support \"Canvas\". Please, use modern browser such as Firefox, Opera, Safari or Chrome</h1>";
         }
@@ -93,6 +98,9 @@ export default class AddRemoveLayout extends React.Component {
     };
     canvasDraw = () => {
         const { containers } = this.state;
+        if (!this.refsC[`testn0`]) {
+            return;
+        }
         const ww = this.refsC[`testn0`].clientWidth;
         let item1 = 0;
         for (let i = 0; i < containers.length; i += 1) {
@@ -116,31 +124,78 @@ export default class AddRemoveLayout extends React.Component {
     onBack = (e) => {
         e.preventDefault();
         this.play();
-        this.setState({ items: [], img: '', win: false });
+        this.setState({ items: [], img: "", win: false });
     };
     onBack2 = (e) => {
         e.preventDefault();
         this.play();
         this.setState({ items: [], dir: false });
     };
-    onSubmit = (e) => {
+
+    youWin = (win) => {
+        var dt2 = new Date();
+        var diff = (dt2.getTime() - this.state.timeStart);
+        var hours = Math.floor(diff / (1000 * 60 * 60));
+        diff -= hours * (1000 * 60 * 60);
+        var mins = Math.floor(diff / (1000 * 60));
+        var sec = Math.floor(diff / (1000));
+        // diff -= mins * (1000 * 60);
+        // outputs: "00:39:30"
+        const h = `${hours < 10 ? "0" : ""}${hours}`;
+        const m = `${mins < 10 ? "0" : ""}${mins}`;
+        const s = `${sec < 10 ? "0" : ""}${sec}`;
+        this.setState({ win: win || true, timeEnd: `${h}:${m}:${s}` });
+        window.confetti.start();
+    };
+
+    onSuffle = (e) => {
         if (e) {
             e.preventDefault();
         }
+        if (Math.random() < 0.5) {
+            this.youWin(!this.state.win);
+            return;
+        }
+        this.onSubmit(null, true);
+    };
+    onSubmit = (e, shuf = false) => {
+        if (e) {
+            e.preventDefault();
+        }
+        this.play();
+        if (shuf) {
+            const { baseArr } = this.state;
+            this.setState({ loader: true, items: [], show: false });
+            setTimeout(() => {
+                const arr = [...baseArr];
+                shuffle(arr);
+                let items = [];
+                for (let i = 0; i < arr.length; i += 1) {
+                    items = this.onAddItem(items);
+                }
+                this.setState({
+                    loader: false,
+                    items,
+                    containers: arr,
+                    show: true,
+                    timeStart: new Date().getTime()
+                }, () => {
+                    this.rerender();
+                });
+            }, 500);
+            return;
+        }
         this.setState({ loader: true });
-        // this.style.display = 'none';
         var url = this.state.img || "cartoon/img5.jpg";
         var dest = document.createElement("div");
         dest.id = "dest";
         dest.className = "dest";
-        // dest.innerHTML = "Loading image...";
         document.body.appendChild(dest);
-
+        // eslint-disable-next-line no-undef
         new PuzzleGame(dest, url, false, (images, countY, countX, getContainer, containers) => {
             getContainerFunc = getContainer;
             const arr = [];
             let items = [];
-
             Object.keys(containers).forEach(i => {
                 arr.push(containers[i]);
             });
@@ -166,7 +221,7 @@ export default class AddRemoveLayout extends React.Component {
         return h;
     };
 
-    onDragStop(c, t, s){
+    onDragStop(c, t, s) {
         // console.log(t);
         // console.log(s);
         // console.log(c,this.state.baseArr);
@@ -175,6 +230,7 @@ export default class AddRemoveLayout extends React.Component {
         // console.log(_.isEqual(this.state.baseArr, c));
         this.play();
     }
+
     onAddItem = (items = false) => {
         if (items && Array.isArray(items)) {
             items = items.concat({
@@ -236,16 +292,17 @@ export default class AddRemoveLayout extends React.Component {
         if (!this.state.soundOn) {
             return;
         }
-        const a = document.getElementById('audio');
+        const a = document.getElementById("audio");
         if (a) {
             a.play();
         }
-    }
+    };
     onSoundToggle = () => {
-        this.setState({soundOn: !this.state.soundOn})
-    }
+        this.setState({ soundOn: !this.state.soundOn });
+    };
+
     render() {
-        console.log('');
+        console.log("");
         return (
                 <div className="center2">
                     {this.state.items.length === 0 ? (
@@ -268,10 +325,11 @@ export default class AddRemoveLayout extends React.Component {
                                 <button className="btn text text-3" onClick={this.onBack}>
                                     Назад
                                 </button>
-                                <button className="btn text text-3" onClick={this.onSubmit}>
-                                    перемешать
+                                <button className="btn text text-3" onClick={this.onSuffle}>
+                                    рестарт
                                 </button>
-                                <div onClick={this.onSoundToggle} className={this.state.soundOn ? 'sound sound-on' : 'sound sound-off'} />
+                                <div onClick={this.onSoundToggle}
+                                     className={this.state.soundOn ? "sound sound-on" : "sound sound-off"} />
                             </div>
                     )}
                     <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
@@ -279,28 +337,39 @@ export default class AddRemoveLayout extends React.Component {
                             <div className="wrapper">
                                 <div className="modal">
                                     <span className="emoji round">🏆</span>
-                                    <h1>Congratulation, Ahmed</h1>
-                                    <a href="#" className="modal-btn">Celebrate</a>
+                                    <h1>Поздравляем</h1>
+                                    <h1>Ваше время: {this.state.timeEnd}</h1>
+                                    <a href="#" className="modal-btn" onClick={this.endGame}>Рестарт</a>
                                 </div>
                                 <div id="confetti-wrapper">
                                 </div>
                             </div>
-                    ) : null}
-                    <div className="game">
-                        <ResponsiveReactGridLayout
-                                onDragStop={this.onDragStop}
-                                margin={[3, 3]}
-                                onLayoutChange={this.onLayoutChange}
-                                onBreakpointChange={this.onBreakpointChange}
-                                {...this.props}
-                                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-                        >
-                            {_.map(this.state.items, el => this.createElement(el))}
-                        </ResponsiveReactGridLayout>
-                    </div>
+                    ) : (
+                            <div className="game">
+                                {this.state.show ? (
+                                        <ResponsiveReactGridLayout
+                                                onDragStop={this.onDragStop}
+                                                margin={[3, 3]}
+                                                onLayoutChange={this.onLayoutChange}
+                                                onBreakpointChange={this.onBreakpointChange}
+                                                {...this.props}
+                                                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                                        >
+                                            {_.map(this.state.items, el => this.createElement(el))}
+                                        </ResponsiveReactGridLayout>
+                                ) : null}
+                            </div>
+                    )}
                 </div>
         );
     }
+
+    endGame = () => {
+        window.confetti.stop();
+        this.setState({ win: false }, () => {
+            this.onSuffle();
+        });
+    };
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
