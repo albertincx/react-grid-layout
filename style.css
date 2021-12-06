@@ -4,14 +4,17 @@ html {
 }
 body {
     padding: 20px;
-    margin: 0;
     background: rgb(2,0,36);
     background: linear-gradient(193deg, rgba(2,0,36,1) 6%, rgba(10,77,48,1) 100%, rgba(7,112,112,1) 100%, rgba(0,212,255,1) 100%);
+    background-size: 310% 310%;
 }
 .center {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.center2 {
+    text-align: center;
 }
 .center3 {
     display: flex;
@@ -67,12 +70,12 @@ body {
     width: 100%;
 }
 .center1 {
-    position: fixed;
-    height: 100%;
-    overflow-y: scroll;
-    width: calc(100% - 20px);
-    padding: 10px;
-    left: 0;
+    /*position: fixed;*/
+    /*height: 100%;*/
+    /*overflow-y: scroll;*/
+    /*width: calc(100% - 20px);*/
+    /*padding: 10px;*/
+    /*left: 0;*/
 }
 .container {
     padding-top: 50px;
@@ -167,17 +170,6 @@ span a {
 .img img {
     width: 100%;
     height: auto;
-}
-
-* {
-    /*margin: 0;*/
-    /*padding: 0;*/
-    /*box-sizing: border-box;*/
-}
-
-body {
-    /*background: #151515;*/
-    text-align: center
 }
 
 .text {

@@ -86,7 +86,8 @@ export default class AddRemoveLayout extends React.Component {
             soundOn: true,
             win: false,
             timeStart: new Date().getTime(),
-            timeEnd: 0
+            timeEnd: 0,
+            // img: "cartoon/img5.jpg",
         };
         this.positions = {
             "0": 0,
@@ -119,6 +120,7 @@ export default class AddRemoveLayout extends React.Component {
         // eslint-disable-next-line no-undef
         if (Puzzler.support()) {
             //
+            // this.onSubmit();
         } else {
             document.body.innerHTML = "<h1>Sorry, but you browser doesn't support \"Canvas\". Please, use modern browser such as Firefox, Opera, Safari or Chrome</h1>";
         }
@@ -288,14 +290,14 @@ export default class AddRemoveLayout extends React.Component {
     };
 
     getPos = (x, y) => {
-        console.log(`${y}${x}`);
+        // console.log(`${y}${x}`);
         return this.positions[`${y}${x}`];
     };
 
     checkLayout = (c) => {
         let match = 0;
         let yT = "";
-        console.log(this.positions);
+        // console.log(this.positions);
         for (let i = 0; i < c.length; i += 1) {
             const cc = c[i];
             if (i > 5) {
@@ -305,7 +307,7 @@ export default class AddRemoveLayout extends React.Component {
                 yT = "b";
             }
             const ccB = cc.baseName.replace("item", "");
-            console.log(`${this.getPos(cc.x, yT)}`,'===',ccB);
+            // console.log(`${this.getPos(cc.x, yT)}`,'===',ccB);
             if (`${this.getPos(cc.x, yT)}` === ccB) {
                 match += 1;
             }
