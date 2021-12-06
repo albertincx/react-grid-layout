@@ -52,6 +52,7 @@ const POSITIONS = {
     "8_4": 16,
     "10_4": 17
 };
+
 window.getContainerFuncHeight = (canvas = false) => {
     const _h = heights[canvas ? 1 : 0];
     let h = _h.d;
@@ -86,6 +87,28 @@ export default class AddRemoveLayout extends React.Component {
             win: false,
             timeStart: new Date().getTime(),
             timeEnd: 0
+        };
+        this.positions = {
+            "0": 0,
+            "2": 1,
+            "4": 2,
+            "6": 3,
+            "8": 4,
+            "10": 5,
+
+            "a0": 6,
+            "a2": 7,
+            "a4": 8,
+            "a6": 9,
+            "a8": 10,
+            "a10": 11,
+
+            "b0": 12,
+            "b2": 13,
+            "b4": 14,
+            "b6": 15,
+            "b8": 16,
+            "b10": 17
         };
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
@@ -217,7 +240,9 @@ export default class AddRemoveLayout extends React.Component {
                 arr.push({ ...containers[i] });
             });
             const baseArr = [...arr];
-            shuffle(arr);
+            if (!window || !window.__shuffle_disable) {
+                shuffle(arr);
+            }
             for (let i = 0; i < arr.length; i += 1) {
                 items = this.onAddItem(items, arr[i].baseName);
             }
@@ -238,17 +263,50 @@ export default class AddRemoveLayout extends React.Component {
         // console.log("h ", h);
         return h;
     };
+    setPos = (yy) => {
+        const newPos = {};
+        let i = 0;
+        let x = 0;
+        for (let f = 0; f < 6; f += 1) {
+            newPos[`${x}_${yy[0]}`] = i;
+            i += 1;
+            x += 2;
+        }
+        x = 0;
+        for (let f = 0; f < 6; f += 1) {
+            newPos[`${x}_${yy[1]}`] = i;
+            i += 1;
+            x += 2;
+        }
+        x = 0;
+        for (let f = 0; f < 6; f += 1) {
+            newPos[`${x}_${yy[2]}`] = i;
+            i += 1;
+            x += 2;
+        }
+        this.positions = newPos;
+    };
 
-    getPos(x, y) {
-        return POSITIONS[`${x}_${y}`];
-    }
+    getPos = (x, y) => {
+        console.log(`${y}${x}`);
+        return this.positions[`${y}${x}`];
+    };
 
     checkLayout = (c) => {
         let match = 0;
+        let yT = "";
+        console.log(this.positions);
         for (let i = 0; i < c.length; i += 1) {
             const cc = c[i];
+            if (i > 5) {
+                yT = "a";
+            }
+            if (i > 11) {
+                yT = "b";
+            }
             const ccB = cc.baseName.replace("item", "");
-            if (`${this.getPos(cc.x, cc.y)}` === ccB) {
+            console.log(`${this.getPos(cc.x, yT)}`,'===',ccB);
+            if (`${this.getPos(cc.x, yT)}` === ccB) {
                 match += 1;
             }
         }
@@ -335,62 +393,63 @@ export default class AddRemoveLayout extends React.Component {
 
     render() {
         return (
-                <div className="center2">
-                    {this.state.items.length === 0 ? (
-                            <div className="center">
-                                {this.state.loader ? <div className="new container progress-6" /> : null}
-                                {/*        <div className="new container">*/}
-                                {/*            <a href="#" className="button" onClick={this.onSubmit}>Начать</a>*/}
-                                {/*        </div>*/}
-                                {/*)}*/}
-                                {this.state.dir ? (
-                                        <div className="center">
-                                            <button className="btn text text-3" onClick={this.onBack2}>
-                                                Назад
-                                            </button>
-                                        </div>
-                                ) : null}
-                            </div>
-                    ) : (
-                            <div className="center3">
-                                <button className="btn text text-3" onClick={this.onBack}>
-                                    Назад
-                                </button>
-                                {!this.state.win ? (
-                                        <button className="btn text text-3" onClick={this.onSuffle}>
-                                            рестарт
-                                        </button>
-                                ) : null}
-                                <div onClick={this.onSoundToggle}
-                                     className={this.state.soundOn ? "sound sound-on" : "sound sound-off"} />
-                            </div>
-                    )}
-                    <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
-                    {this.state.win ? (
-                            <div className="wrapper">
-                                <div className="modal">
-                                    <span className="emoji round">🏆</span>
-                                    <h1>Поздравляем</h1>
-                                    <h1>Ваше время: {this.state.timeEnd}</h1>
-                                    <a href="#" className="modal-btn" onClick={this.endGame}>Рестарт</a>
+                <div className="center1">
+                    <div className="center2">
+                        {this.state.items.length === 0 ? (
+                                <div className="center">
+                                    {this.state.loader ? <div className="new container progress-6" /> : null}
+                                    {this.state.dir ? (
+                                            <div className="center">
+                                                <div className="btn text text-3" onClick={this.onBack2}>
+                                                    Назад
+                                                </div>
+                                            </div>
+                                    ) : null}
                                 </div>
-                                <div id="confetti-wrapper">
+                        ) : (
+                                <div className="center3">
+                                    <div className="btn text text-3" onClick={this.onBack}>
+                                        Назад
+                                    </div>
+                                    {!this.state.win ? (
+                                            <div className="btn text text-3" onClick={this.onSuffle}>
+                                                Рестарт
+                                            </div>
+                                    ) : null}
+                                    <div onClick={this.onSoundToggle}
+                                         className={this.state.soundOn ? "sound sound-on" : "sound sound-off"} />
                                 </div>
-                            </div>
-                    ) : (
-                            <div className="game">
-                                <ResponsiveReactGridLayout
-                                        onDragStop={this.onDragStop}
-                                        margin={[3, 3]}
-                                        onLayoutChange={this.onLayoutChange}
-                                        onBreakpointChange={this.onBreakpointChange}
-                                        {...this.props}
-                                        cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-                                >
-                                    {_.map(this.state.items, el => this.createElement(el))}
-                                </ResponsiveReactGridLayout>
-                            </div>
-                    )}
+                        )}
+                        <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
+                        {this.state.win ? (
+                                <div className="wrapper">
+                                    <div className="modal">
+                                        <span className="emoji round">🏆</span>
+                                        <h1>Поздравляем</h1>
+                                        <h1>Время: {this.state.timeEnd}</h1>
+                                        <a href="#" className="modal-btn" onClick={this.endGame}>Рестарт</a>
+                                    </div>
+                                    <div id="confetti-wrapper">
+                                    </div>
+                                </div>
+                        ) : null}
+                        <div className="game">
+                            <ResponsiveReactGridLayout
+                                    onDragStop={this.onDragStop}
+                                    margin={[3, 3]}
+                                    onLayoutChange={this.onLayoutChange}
+                                    onBreakpointChange={this.onBreakpointChange}
+                                    {...this.props}
+                                    cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                            >
+                                {_.map(this.state.items, el => this.createElement(el))}
+                            </ResponsiveReactGridLayout>
+                        </div>
+                    </div>
+                    <div>
+                        <br/>
+                        <br/>
+                    </div>
                 </div>
         );
     }

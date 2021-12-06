@@ -4,10 +4,7 @@ body {
 #content {
   width: 100%;
 }
-.react-grid-layout {
-  /*background: #eee;*/
-  /*margin-top: 10px;*/
-}
+
 .layoutJSON {
   background: #ddd;
   border: 1px solid black;

@@ -66,7 +66,14 @@ body {
 .button:hover:before {
     width: 100%;
 }
-
+.center1 {
+    position: fixed;
+    height: 100%;
+    overflow-y: scroll;
+    width: calc(100% - 20px);
+    padding: 10px;
+    left: 0;
+}
 .container {
     padding-top: 50px;
     margin: 0 auto;
@@ -224,10 +231,13 @@ body {
     justify-content: center;
     align-items: center;
     height: 70vh;
+    position: absolute;
+    width: 100%;
+    background: #000000b0;
+    z-index: 1;
 }
 
 .modal {
-    width: 300px;
     margin: 0 auto;
     border: 1px solid var(--border-color);
     box-shadow: 0px 0px 5px rgba(0,0,0,0.16);
@@ -278,12 +288,21 @@ h1 {
     text-decoration: none;
 }
 .sound {
+    padding: 22px;
     width: 32px;
     height: 32px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
 }
 .sound-on {
     background-image: url("soundOn.png");
 }
 .sound-off {
     background-image: url("soundOff.png");
+}
+.version {
+    position: absolute;
+}
+.react-grid-layout {
+    /*padding-left: 20px;*/
 }

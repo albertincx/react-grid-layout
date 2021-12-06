@@ -131,7 +131,8 @@ export default class Gallery extends React.Component {
                 <div className="center2">
                     {!this.props.dir ? (
                             <div className="text-3">
-                                Выберите категорию
+                                Выбрать категорию
+                                <span className="version">версия 0.12</span>
                             </div>
                     ) : null}
                     <div className={`game ${this.props.dir ? " even" : ""}`}>
