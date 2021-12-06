@@ -30,7 +30,28 @@ function shuffle(a) {
 }
 
 const heights = [{ d: 2, s2: 0.6, s: 0.9, m: 1, m2: 1.5 }, { d: 200, s2: 60, s: 90, m: 100, m2: 150 }];
+const POSITIONS = {
+    "0_0": 0,
+    "2_0": 1,
+    "4_0": 2,
+    "6_0": 3,
+    "8_0": 4,
+    "10_0": 5,
 
+    "0_2": 6,
+    "2_2": 7,
+    "4_2": 8,
+    "6_2": 9,
+    "8_2": 10,
+    "10_2": 11,
+
+    "0_4": 12,
+    "2_4": 13,
+    "4_4": 14,
+    "6_4": 15,
+    "8_4": 16,
+    "10_4": 17
+};
 window.getContainerFuncHeight = (canvas = false) => {
     const _h = heights[canvas ? 1 : 0];
     let h = _h.d;
@@ -61,7 +82,6 @@ export default class AddRemoveLayout extends React.Component {
             newCounter: 0,
             containers: [],
             loader: false,
-            show: true,
             soundOn: true,
             win: false,
             timeStart: new Date().getTime(),
@@ -144,6 +164,7 @@ export default class AddRemoveLayout extends React.Component {
         const h = `${hours < 10 ? "0" : ""}${hours}`;
         const m = `${mins < 10 ? "0" : ""}${mins}`;
         const s = `${sec < 10 ? "0" : ""}${sec}`;
+        this.play("2");
         this.setState({ win: win || true, timeEnd: `${h}:${m}:${s}` });
         window.confetti.start();
     };
@@ -151,10 +172,6 @@ export default class AddRemoveLayout extends React.Component {
     onSuffle = (e) => {
         if (e) {
             e.preventDefault();
-        }
-        if (Math.random() < 0.5) {
-            this.youWin(!this.state.win);
-            return;
         }
         this.onSubmit(null, true);
     };
@@ -165,7 +182,7 @@ export default class AddRemoveLayout extends React.Component {
         this.play();
         if (shuf) {
             const { baseArr } = this.state;
-            this.setState({ loader: true, items: [], show: false });
+            this.setState({ loader: true, items: [] });
             setTimeout(() => {
                 const arr = [...baseArr];
                 shuffle(arr);
@@ -177,7 +194,6 @@ export default class AddRemoveLayout extends React.Component {
                     loader: false,
                     items,
                     containers: arr,
-                    show: true,
                     timeStart: new Date().getTime()
                 }, () => {
                     this.rerender();
@@ -202,13 +218,11 @@ export default class AddRemoveLayout extends React.Component {
             });
             const baseArr = [...arr];
             shuffle(arr);
-            const winScheme = {};
             for (let i = 0; i < arr.length; i += 1) {
-                winScheme[`${arr[i].baseName.replace("item", "")}`] = `n${i}`;
                 items = this.onAddItem(items, arr[i].baseName);
             }
             window.confetti.stop();
-            this.setState({ winScheme, items, containers: arr, loader: false, baseArr }, () => {
+            this.setState({ items, containers: arr, loader: false, baseArr }, () => {
                 this.rerender();
             });
         });
@@ -225,11 +239,26 @@ export default class AddRemoveLayout extends React.Component {
         return h;
     };
 
-    onDragStop(c, old, newL) {
-        // console.log(c[i].i);
-        // console.log(this.props);
-        // console.log(_.isEqual(this.state.items, c));
-        // console.log(_.isEqual(this.state.baseArr, c));
+    getPos(x, y) {
+        return POSITIONS[`${x}_${y}`];
+    }
+
+    checkLayout = (c) => {
+        let match = 0;
+        for (let i = 0; i < c.length; i += 1) {
+            const cc = c[i];
+            const ccB = cc.baseName.replace("item", "");
+            if (`${this.getPos(cc.x, cc.y)}` === ccB) {
+                match += 1;
+            }
+        }
+        return match === c.length;
+    };
+
+    onDragStop(c) {
+        if (this.checkLayout(c)) {
+            this.youWin();
+        }
         this.play();
     }
 
@@ -291,11 +320,11 @@ export default class AddRemoveLayout extends React.Component {
             }
         });
     };
-    play = () => {
+    play = (idStr = "") => {
         if (!this.state.soundOn) {
             return;
         }
-        const a = document.getElementById("audio");
+        const a = document.getElementById("audio" + idStr);
         if (a) {
             a.play();
         }
@@ -327,9 +356,11 @@ export default class AddRemoveLayout extends React.Component {
                                 <button className="btn text text-3" onClick={this.onBack}>
                                     Назад
                                 </button>
-                                <button className="btn text text-3" onClick={this.onSuffle}>
-                                    рестарт
-                                </button>
+                                {!this.state.win ? (
+                                        <button className="btn text text-3" onClick={this.onSuffle}>
+                                            рестарт
+                                        </button>
+                                ) : null}
                                 <div onClick={this.onSoundToggle}
                                      className={this.state.soundOn ? "sound sound-on" : "sound sound-off"} />
                             </div>
@@ -348,18 +379,16 @@ export default class AddRemoveLayout extends React.Component {
                             </div>
                     ) : (
                             <div className="game">
-                                {this.state.show ? (
-                                        <ResponsiveReactGridLayout
-                                                onDragStop={this.onDragStop}
-                                                margin={[3, 3]}
-                                                onLayoutChange={this.onLayoutChange}
-                                                onBreakpointChange={this.onBreakpointChange}
-                                                {...this.props}
-                                                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-                                        >
-                                            {_.map(this.state.items, el => this.createElement(el))}
-                                        </ResponsiveReactGridLayout>
-                                ) : null}
+                                <ResponsiveReactGridLayout
+                                        onDragStop={this.onDragStop}
+                                        margin={[3, 3]}
+                                        onLayoutChange={this.onLayoutChange}
+                                        onBreakpointChange={this.onBreakpointChange}
+                                        {...this.props}
+                                        cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                                >
+                                    {_.map(this.state.items, el => this.createElement(el))}
+                                </ResponsiveReactGridLayout>
                             </div>
                     )}
                 </div>
