@@ -30,28 +30,6 @@ function shuffle(a) {
 }
 
 const heights = [{ d: 2, s2: 0.6, s: 0.9, m: 1, m2: 1.5 }, { d: 200, s2: 60, s: 90, m: 100, m2: 150 }];
-const POSITIONS = {
-    "0_0": 0,
-    "2_0": 1,
-    "4_0": 2,
-    "6_0": 3,
-    "8_0": 4,
-    "10_0": 5,
-
-    "0_2": 6,
-    "2_2": 7,
-    "4_2": 8,
-    "6_2": 9,
-    "8_2": 10,
-    "10_2": 11,
-
-    "0_4": 12,
-    "2_4": 13,
-    "4_4": 14,
-    "6_4": 15,
-    "8_4": 16,
-    "10_4": 17
-};
 
 window.getContainerFuncHeight = (canvas = false) => {
     const _h = heights[canvas ? 1 : 0];
@@ -86,31 +64,15 @@ export default class AddRemoveLayout extends React.Component {
             soundOn: true,
             win: false,
             timeStart: new Date().getTime(),
-            timeEnd: 0,
+            timeEnd: 0
             // img: "cartoon/img5.jpg",
         };
-        this.positions = {
-            "0": 0,
-            "2": 1,
-            "4": 2,
-            "6": 3,
-            "8": 4,
-            "10": 5,
-
-            "a0": 6,
-            "a2": 7,
-            "a4": 8,
-            "a6": 9,
-            "a8": 10,
-            "a10": 11,
-
-            "b0": 12,
-            "b2": 13,
-            "b4": 14,
-            "b6": 15,
-            "b8": 16,
-            "b10": 17
-        };
+        this.checkPositions = [
+            0, 2, 4, 6, 8, 10,
+            0, 2, 4, 6, 8, 10,
+            0, 2, 4, 6, 8, 10
+        ];
+        this.positions = null;
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
@@ -215,6 +177,7 @@ export default class AddRemoveLayout extends React.Component {
                 for (let i = 0; i < arr.length; i += 1) {
                     items = this.onAddItem(items);
                 }
+                this.positions = null;
                 this.setState({
                     loader: false,
                     items,
@@ -226,6 +189,7 @@ export default class AddRemoveLayout extends React.Component {
             }, 500);
             return;
         }
+        this.positions = null;
         this.setState({ loader: true });
         var url = this.state.img || "cartoon/img5.jpg";
         var dest = document.createElement("div");
@@ -265,50 +229,45 @@ export default class AddRemoveLayout extends React.Component {
         // console.log("h ", h);
         return h;
     };
-    setPos = (yy) => {
-        const newPos = {};
-        let i = 0;
-        let x = 0;
-        for (let f = 0; f < 6; f += 1) {
-            newPos[`${x}_${yy[0]}`] = i;
-            i += 1;
-            x += 2;
+    setPos = (c) => {
+        if (this.positions) {
+            return;
         }
-        x = 0;
-        for (let f = 0; f < 6; f += 1) {
-            newPos[`${x}_${yy[1]}`] = i;
-            i += 1;
-            x += 2;
+
+        const pos = [];
+        for (let f = 0; f < c.length; f += 1) {
+            if (!pos.includes(c[f].y)) {
+                pos.push(c[f].y);
+            }
         }
-        x = 0;
-        for (let f = 0; f < 6; f += 1) {
-            newPos[`${x}_${yy[2]}`] = i;
-            i += 1;
-            x += 2;
-        }
-        this.positions = newPos;
+        this.positions = [pos[0], pos[1], pos[2]];
     };
 
-    getPos = (x, y) => {
-        // console.log(`${y}${x}`);
-        return this.positions[`${y}${x}`];
-    };
-
-    checkLayout = (c) => {
-        let match = 0;
-        let yT = "";
-        // console.log(this.positions);
+    checkItem = (c, f) => {
+        let yT = this.positions[0];
         for (let i = 0; i < c.length; i += 1) {
             const cc = c[i];
-            if (i > 5) {
-                yT = "a";
-            }
-            if (i > 11) {
-                yT = "b";
-            }
             const ccB = cc.baseName.replace("item", "");
-            // console.log(`${this.getPos(cc.x, yT)}`,'===',ccB);
-            if (`${this.getPos(cc.x, yT)}` === ccB) {
+            if (ccB === `${f}`) {
+                if (i > 5) {
+                    yT = this.positions[1];
+                }
+                if (i > 11) {
+                    yT = this.positions[2];
+                }
+                if (cc.x === this.checkPositions[f] && cc.y === yT) {
+                    return true;
+                }
+                break;
+            }
+        }
+    };
+    checkLayout = (c) => {
+        let match = 0;
+        this.setPos(c);
+
+        for (let i = 0; i < c.length; i += 1) {
+            if (this.checkItem(c, i)) {
                 match += 1;
             }
         }
@@ -449,8 +408,8 @@ export default class AddRemoveLayout extends React.Component {
                         </div>
                     </div>
                     <div>
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                     </div>
                 </div>
         );

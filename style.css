@@ -230,6 +230,7 @@ span a {
 }
 
 .modal {
+    min-width: 30%;
     margin: 0 auto;
     border: 1px solid var(--border-color);
     box-shadow: 0px 0px 5px rgba(0,0,0,0.16);
