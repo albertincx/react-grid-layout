@@ -240,7 +240,7 @@ export default class AddRemoveLayout extends React.Component {
                 pos.push(c[f].y);
             }
         }
-        this.positions = [pos[0], pos[1], pos[2]];
+        this.positions = [pos[0], pos[1], pos[2]].sort();
     };
 
     checkItem = (c, f) => {
@@ -249,10 +249,10 @@ export default class AddRemoveLayout extends React.Component {
             const cc = c[i];
             const ccB = cc.baseName.replace("item", "");
             if (ccB === `${f}`) {
-                if (i > 5) {
+                if (f > 5) {
                     yT = this.positions[1];
                 }
-                if (i > 11) {
+                if (f > 11) {
                     yT = this.positions[2];
                 }
                 if (cc.x === this.checkPositions[f] && cc.y === yT) {
@@ -265,7 +265,6 @@ export default class AddRemoveLayout extends React.Component {
     checkLayout = (c) => {
         let match = 0;
         this.setPos(c);
-
         for (let i = 0; i < c.length; i += 1) {
             if (this.checkItem(c, i)) {
                 match += 1;
@@ -277,8 +276,9 @@ export default class AddRemoveLayout extends React.Component {
     onDragStop(c) {
         if (this.checkLayout(c)) {
             this.youWin();
+        } else {
+            this.play();
         }
-        this.play();
     }
 
     onAddItem = (items = false, baseName = "") => {
