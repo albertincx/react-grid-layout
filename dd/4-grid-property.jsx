@@ -4,7 +4,7 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class MinMaxLayout extends React.PureComponent {
+export default class GridPropertyLayout extends React.PureComponent {
   static defaultProps = {
     isDraggable: true,
     isResizable: true,
@@ -17,13 +17,10 @@ export default class MinMaxLayout extends React.PureComponent {
   generateDOM() {
     // Generate items with properties from the layout, rather than pass the layout directly
     const layout = this.generateLayout();
-    return _.map(layout, function(l) {
-      const mins = [l.minW, l.minH],
-        maxes = [l.maxW, l.maxH];
+    return _.map(_.range(this.props.items), function(i) {
       return (
-        <div key={l.i} data-grid={l}>
-          <span className="text">{l.i}</span>
-          <div className="minMax">{"min:" + mins + " - max:" + maxes}</div>
+        <div key={i} data-grid={layout[i]}>
+          <span className="text">{i}</span>
         </div>
       );
     });
@@ -32,22 +29,14 @@ export default class MinMaxLayout extends React.PureComponent {
   generateLayout() {
     const p = this.props;
     return _.map(new Array(p.items), function(item, i) {
-      const minW = _.random(1, 6),
-        minH = _.random(1, 6);
-      const maxW = _.random(minW, 6),
-        maxH = _.random(minH, 6);
-      const w = _.random(minW, maxW);
-      const y = _.random(minH, maxH);
+      var w = _.result(p, "w") || Math.ceil(Math.random() * 4);
+      var y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
       return {
         x: (i * 2) % 12,
         y: Math.floor(i / 6) * y,
-        w,
+        w: w,
         h: y,
-        i: i.toString(),
-        minW,
-        maxW,
-        minH,
-        maxH
+        i: i.toString()
       };
     });
   }
@@ -66,5 +55,5 @@ export default class MinMaxLayout extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(MinMaxLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(GridPropertyLayout));
 }

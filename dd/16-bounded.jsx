@@ -4,17 +4,13 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class NoCollisionLayout extends React.PureComponent {
+class BoundedLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    items: 50,
-    cols: 12,
+    items: 20,
     rowHeight: 30,
     onLayoutChange: function() {},
-    // This turns off compaction so you can place items wherever.
-    verticalCompact: false,
-    // This turns off rearrangement so items will not be pushed arround.
-    preventCollision: true
+    cols: 12
   };
 
   constructor(props) {
@@ -57,6 +53,7 @@ export default class NoCollisionLayout extends React.PureComponent {
       <ReactGridLayout
         layout={this.state.layout}
         onLayoutChange={this.onLayoutChange}
+        isBounded={true}
         {...this.props}
       >
         {this.generateDOM()}
@@ -66,5 +63,5 @@ export default class NoCollisionLayout extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(NoCollisionLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(BoundedLayout));
 }

@@ -4,15 +4,13 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class NoDraggingLayout extends React.PureComponent {
+export default class ResizableHandles extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    isDraggable: false,
-    isResizable: false,
-    items: 50,
-    cols: 12,
+    items: 20,
     rowHeight: 30,
-    onLayoutChange: function() {}
+    onLayoutChange: function() {},
+    cols: 12
   };
 
   constructor(props) {
@@ -34,14 +32,17 @@ export default class NoDraggingLayout extends React.PureComponent {
 
   generateLayout() {
     const p = this.props;
+    const availableHandles = ["s", "w", "e", "n", "sw", "nw", "se", "ne"];
+
     return _.map(new Array(p.items), function(item, i) {
-      var y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
+      const y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
       return {
         x: (i * 2) % 12,
         y: Math.floor(i / 6) * y,
         w: 2,
         h: y,
-        i: i.toString()
+        i: i.toString(),
+        resizeHandles: _.shuffle(availableHandles).slice(0, _.random(1, availableHandles.length-1))
       };
     });
   }
@@ -64,5 +65,5 @@ export default class NoDraggingLayout extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(NoDraggingLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(ResizableHandles));
 }

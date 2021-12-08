@@ -4,15 +4,14 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class NoCompactingLayout extends React.PureComponent {
+export default class ScaledLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    items: 50,
-    cols: 12,
+    items: 20,
     rowHeight: 30,
     onLayoutChange: function() {},
-    // This turns off compaction so you can place items wherever.
-    verticalCompact: false
+    cols: 12,
+    transformScale: 0.5
   };
 
   constructor(props) {
@@ -52,17 +51,19 @@ export default class NoCompactingLayout extends React.PureComponent {
 
   render() {
     return (
-      <ReactGridLayout
-        layout={this.state.layout}
-        onLayoutChange={this.onLayoutChange}
-        {...this.props}
-      >
-        {this.generateDOM()}
-      </ReactGridLayout>
+      <div style={{transform: 'scale(0.5) translate(-50%, -50%)'}}>
+        <ReactGridLayout
+          layout={this.state.layout}
+          onLayoutChange={this.onLayoutChange}
+          {...this.props}
+        >
+          {this.generateDOM()}
+        </ReactGridLayout>
+      </div>
     );
   }
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(NoCompactingLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(ScaledLayout));
 }

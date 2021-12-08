@@ -4,14 +4,13 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class ScaledLayout extends React.PureComponent {
+export default class AllowOverlap extends React.PureComponent {
   static defaultProps = {
     className: "layout",
     items: 20,
     rowHeight: 30,
     onLayoutChange: function() {},
-    cols: 12,
-    transformScale: 0.5
+    cols: 12
   };
 
   constructor(props) {
@@ -51,19 +50,19 @@ export default class ScaledLayout extends React.PureComponent {
 
   render() {
     return (
-      <div style={{transform: 'scale(0.5) translate(-50%, -50%)'}}>
-        <ReactGridLayout
-          layout={this.state.layout}
-          onLayoutChange={this.onLayoutChange}
-          {...this.props}
-        >
-          {this.generateDOM()}
-        </ReactGridLayout>
-      </div>
+      <ReactGridLayout
+        layout={this.state.layout}
+        onLayoutChange={this.onLayoutChange}
+        useCSSTransforms={true}
+        allowOverlap={true}
+        {...this.props}
+      >
+        {this.generateDOM()}
+      </ReactGridLayout>
     );
   }
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(ScaledLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(AllowOverlap));
 }

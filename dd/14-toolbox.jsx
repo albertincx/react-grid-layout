@@ -3,19 +3,52 @@ import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export default class DragFromOutsideLayout extends React.Component {
+class ToolBoxItem extends React.Component {
+  render() {
+    return (
+      <div
+        className="toolbox__items__item"
+        onClick={this.props.onTakeItem.bind(undefined, this.props.item)}
+      >
+        {this.props.item.i}
+      </div>
+    );
+  }
+}
+class ToolBox extends React.Component {
+  render() {
+    return (
+      <div className="toolbox">
+        <span className="toolbox__title">Toolbox</span>
+        <div className="toolbox__items">
+          {this.props.items.map(item => (
+            <ToolBoxItem
+              key={item.i}
+              item={item}
+              onTakeItem={this.props.onTakeItem}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default class ToolboxLayout extends React.Component {
   static defaultProps = {
     className: "layout",
     rowHeight: 30,
     onLayoutChange: function() {},
     cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
+    initialLayout: generateLayout()
   };
 
   state = {
     currentBreakpoint: "lg",
     compactType: "vertical",
     mounted: false,
-    layouts: { lg: generateLayout() }
+    layouts: { lg: this.props.initialLayout },
+    toolbox: { lg: [] }
   };
 
   componentDidMount() {
@@ -23,18 +56,21 @@ export default class DragFromOutsideLayout extends React.Component {
   }
 
   generateDOM() {
-    return _.map(this.state.layouts.lg, function(l, i) {
+    return _.map(this.state.layouts[this.state.currentBreakpoint], l => {
       return (
-        <div key={i} className={l.static ? "static" : ""}>
+        <div key={l.i} className={l.static ? "static" : ""}>
+          <div className="hide-button" onClick={this.onPutItem.bind(this, l)}>
+            &times;
+          </div>
           {l.static ? (
             <span
               className="text"
               title="This item is static and cannot be removed or resized."
             >
-              Static - {i}
+              Static - {l.i}
             </span>
           ) : (
-            <span className="text">{i}</span>
+            <span className="text">{l.i}</span>
           )}
         </div>
       );
@@ -42,9 +78,16 @@ export default class DragFromOutsideLayout extends React.Component {
   }
 
   onBreakpointChange = breakpoint => {
-    this.setState({
-      currentBreakpoint: breakpoint
-    });
+    this.setState(prevState => ({
+      currentBreakpoint: breakpoint,
+      toolbox: {
+        ...prevState.toolbox,
+        [breakpoint]:
+          prevState.toolbox[breakpoint] ||
+          prevState.toolbox[prevState.currentBreakpoint] ||
+          []
+      }
+    }));
   };
 
   onCompactTypeChange = () => {
@@ -58,18 +101,53 @@ export default class DragFromOutsideLayout extends React.Component {
     this.setState({ compactType });
   };
 
+  onTakeItem = item => {
+    this.setState(prevState => ({
+      toolbox: {
+        ...prevState.toolbox,
+        [prevState.currentBreakpoint]: prevState.toolbox[
+          prevState.currentBreakpoint
+        ].filter(({ i }) => i !== item.i)
+      },
+      layouts: {
+        ...prevState.layouts,
+        [prevState.currentBreakpoint]: [
+          ...prevState.layouts[prevState.currentBreakpoint],
+          item
+        ]
+      }
+    }));
+  };
+
+  onPutItem = item => {
+    this.setState(prevState => {
+      return {
+        toolbox: {
+          ...prevState.toolbox,
+          [prevState.currentBreakpoint]: [
+            ...(prevState.toolbox[prevState.currentBreakpoint] || []),
+            item
+          ]
+        },
+        layouts: {
+          ...prevState.layouts,
+          [prevState.currentBreakpoint]: prevState.layouts[
+            prevState.currentBreakpoint
+          ].filter(({ i }) => i !== item.i)
+        }
+      };
+    });
+  };
+
   onLayoutChange = (layout, layouts) => {
     this.props.onLayoutChange(layout, layouts);
+    this.setState({ layouts });
   };
 
   onNewLayout = () => {
     this.setState({
       layouts: { lg: generateLayout() }
     });
-  };
-
-  onDrop = (layout, layoutItem, _event) => {
-    alert(`Dropped element props:\n${JSON.stringify(layoutItem, ['x', 'y', 'w', 'h'], 2)}`);
   };
 
   render() {
@@ -87,24 +165,17 @@ export default class DragFromOutsideLayout extends React.Component {
         <button onClick={this.onCompactTypeChange}>
           Change Compaction Type
         </button>
-        <div
-          className="droppable-element"
-          draggable={true}
-          unselectable="on"
-          // this is a hack for firefox
-          // Firefox requires some kind of initialization
-          // which we can do by adding this attribute
-          // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
-          onDragStart={e => e.dataTransfer.setData("text/plain", "")}
-        >
-          Droppable Element (Drag me!)
-        </div>
+
+        <ToolBox
+          items={this.state.toolbox[this.state.currentBreakpoint] || []}
+          onTakeItem={this.onTakeItem}
+        />
+
         <ResponsiveReactGridLayout
           {...this.props}
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange}
           onLayoutChange={this.onLayoutChange}
-          onDrop={this.onDrop}
           // WidthProvider option
           measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
@@ -112,7 +183,6 @@ export default class DragFromOutsideLayout extends React.Component {
           useCSSTransforms={this.state.mounted}
           compactType={this.state.compactType}
           preventCollision={!this.state.compactType}
-          isDroppable={true}
         >
           {this.generateDOM()}
         </ResponsiveReactGridLayout>
@@ -125,7 +195,7 @@ function generateLayout() {
   return _.map(_.range(0, 25), function(item, i) {
     var y = Math.ceil(Math.random() * 4) + 1;
     return {
-      x: Math.round(Math.random() * 5) * 2,
+      x: (_.random(0, 5) * 2) % 12,
       y: Math.floor(i / 6) * y,
       w: 2,
       h: y,
@@ -136,5 +206,5 @@ function generateLayout() {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(DragFromOutsideLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(ToolboxLayout));
 }

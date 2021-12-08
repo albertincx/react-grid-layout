@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
 import _ from "lodash";
-import RGL from '../../lib/ReactGridLayout';
-import WidthProvider from '../../lib/components/WidthProvider';
-import type {Layout, ReactChildren} from '../../lib/utils';
+import RGL from '../lib/ReactGridLayout';
+import WidthProvider from '../lib/components/WidthProvider';
+import type {Layout, ReactChildren} from '../lib/utils';
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -76,5 +76,5 @@ export default class MessyLayout extends React.PureComponent<Props, State> {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(MessyLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(MessyLayout));
 }

@@ -80,5 +80,5 @@ export default class DynamicMinMaxLayout extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(DynamicMinMaxLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(DynamicMinMaxLayout));
 }

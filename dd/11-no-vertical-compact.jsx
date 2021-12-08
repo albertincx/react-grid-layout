@@ -4,13 +4,15 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-class BoundedLayout extends React.PureComponent {
+export default class NoCompactingLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    items: 20,
+    items: 50,
+    cols: 12,
     rowHeight: 30,
     onLayoutChange: function() {},
-    cols: 12
+    // This turns off compaction so you can place items wherever.
+    verticalCompact: false
   };
 
   constructor(props) {
@@ -53,7 +55,6 @@ class BoundedLayout extends React.PureComponent {
       <ReactGridLayout
         layout={this.state.layout}
         onLayoutChange={this.onLayoutChange}
-        isBounded={true}
         {...this.props}
       >
         {this.generateDOM()}
@@ -63,5 +64,5 @@ class BoundedLayout extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(BoundedLayout));
+  import("../test/test-hook.jsx").then(fn => fn.default(NoCompactingLayout));
 }

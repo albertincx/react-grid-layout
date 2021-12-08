@@ -4,13 +4,17 @@ import RGL, { WidthProvider } from "react-grid-layout";
 
 const ReactGridLayout = WidthProvider(RGL);
 
-export default class ResizableHandles extends React.PureComponent {
+export default class NoCollisionLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    items: 20,
+    items: 50,
+    cols: 12,
     rowHeight: 30,
     onLayoutChange: function() {},
-    cols: 12
+    // This turns off compaction so you can place items wherever.
+    verticalCompact: false,
+    // This turns off rearrangement so items will not be pushed arround.
+    preventCollision: true
   };
 
   constructor(props) {
@@ -32,8 +36,6 @@ export default class ResizableHandles extends React.PureComponent {
 
   generateLayout() {
     const p = this.props;
-    const availableHandles = ["s", "w", "e", "n", "sw", "nw", "se", "ne"];
-
     return _.map(new Array(p.items), function(item, i) {
       const y = _.result(p, "y") || Math.ceil(Math.random() * 4) + 1;
       return {
@@ -41,8 +43,7 @@ export default class ResizableHandles extends React.PureComponent {
         y: Math.floor(i / 6) * y,
         w: 2,
         h: y,
-        i: i.toString(),
-        resizeHandles: _.shuffle(availableHandles).slice(0, _.random(1, availableHandles.length-1))
+        i: i.toString()
       };
     });
   }
@@ -65,5 +66,5 @@ export default class ResizableHandles extends React.PureComponent {
 }
 
 if (process.env.STATIC_EXAMPLES === true) {
-  import("../test-hook.jsx").then(fn => fn.default(ResizableHandles));
+  import("../test/test-hook.jsx").then(fn => fn.default(NoCollisionLayout));
 }
