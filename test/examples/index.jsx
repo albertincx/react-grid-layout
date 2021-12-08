@@ -375,7 +375,7 @@ export default class AddRemoveLayout extends React.Component {
                                 </div>
                         )}
                         <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
-                        {!this.state.items.length && !this.state.loader ? (
+                        {!this.state.items.length && !this.state.loader && !this.state.dir ? (
                                 <div className="text1 fixedbutton text-31 button font" onClick={this.randomPuzzle}>
                                     🎲 Случайный пазл
                                 </div>

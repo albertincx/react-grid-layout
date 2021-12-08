@@ -23,4 +23,5 @@ data.forEach(function(datum, i) {
   datum.time = new Date().getTime();
   const html = ejs.render(tpl, datum);
   fs.writeFileSync(__dirname + "/" + datum.source + ".html", html);
+  fs.copyFileSync(__dirname + "/../style.css", __dirname + "/style.css");
 });
