@@ -7,7 +7,7 @@ import Gallery from "./Gallery";
 
 require("./Puzzler/Puzzler").default();
 require("./Puzzler/PuzzleGame").default();
-require("./conf").default();
+require("./Puzzler/conf").default();
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 /**
  * This layout demonstrates how to use a grid with a dynamic number of elements.
