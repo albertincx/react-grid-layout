@@ -45,7 +45,6 @@ window.getContainerFuncHeight = (canvas = false) => {
     }
     return h;
 };
-const MAX_ITEMS = 18;
 export default class AddRemoveLayout extends React.Component {
     static defaultProps = {
         className: "layout",
@@ -56,7 +55,6 @@ export default class AddRemoveLayout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            baseArr: [],
             items: [],
             newCounter: 0,
             containers: [],
@@ -65,7 +63,6 @@ export default class AddRemoveLayout extends React.Component {
             win: false,
             timeStart: new Date().getTime(),
             timeEnd: 0
-            // img: "cartoon/img5.jpg",
         };
         this.checkPositions = [
             0, 2, 4, 6, 8, 10,
@@ -88,24 +85,27 @@ export default class AddRemoveLayout extends React.Component {
         }
     }
 
-    rerender = (upd = false) => {
-        if (getContainerFunc) {
-            if (upd) {
-                let items = [];
-                for (let i = 0; i < MAX_ITEMS; i += 1) {
-                    items = this.onAddItem(items);
-                }
-                this.setState({ items }, () => {
-                    this.canvasDraw();
-                });
-            } else {
-                this.canvasDraw();
+    rerender = (upd = false, shuffleOn = false) => {
+        if (upd) {
+            const {containers} = this.state;
+            const arr = [...containers];
+            if (shuffleOn && !(window && window.__shuffle_disable)) {
+                shuffle(arr);
             }
+            let items = [];
+            for (let i = 0; i < arr.length; i += 1) {
+                items = this.onAddItem(items, arr[i].baseName);
+            }
+            this.setState({ items, containers: arr }, () => {
+                this.canvasDraw();
+            });
+        } else {
+            this.canvasDraw();
         }
     };
     canvasDraw = () => {
         const { containers } = this.state;
-        if (!this.refsC[`testn0`]) {
+        if (!this.refsC[`testn0`] || !getContainerFunc) {
             return;
         }
         const ww = this.refsC[`testn0`].clientWidth;
@@ -168,23 +168,14 @@ export default class AddRemoveLayout extends React.Component {
         }
         this.play();
         if (shuf) {
-            const { baseArr } = this.state;
             this.setState({ loader: true, items: [] });
             setTimeout(() => {
-                const arr = [...baseArr];
-                shuffle(arr);
-                let items = [];
-                for (let i = 0; i < arr.length; i += 1) {
-                    items = this.onAddItem(items);
-                }
                 this.positions = null;
                 this.setState({
                     loader: false,
-                    items,
-                    containers: arr,
                     timeStart: new Date().getTime()
                 }, () => {
-                    this.rerender();
+                    this.rerender(true, true);
                 });
             }, 500);
             return;
@@ -199,22 +190,14 @@ export default class AddRemoveLayout extends React.Component {
         // eslint-disable-next-line no-undef
         new PuzzleGame(dest, url, false, (images, countY, countX, getContainer, containers) => {
             getContainerFunc = getContainer;
+            window.confetti.stop();
             const arr = [];
-            let items = [];
             Object.keys(containers).forEach(i => {
                 containers[i].baseName = i;
                 arr.push({ ...containers[i] });
             });
-            const baseArr = [...arr];
-            if (!window || !window.__shuffle_disable) {
-                shuffle(arr);
-            }
-            for (let i = 0; i < arr.length; i += 1) {
-                items = this.onAddItem(items, arr[i].baseName);
-            }
-            window.confetti.stop();
-            this.setState({ items, containers: arr, loader: false, baseArr }, () => {
-                this.rerender();
+            this.setState({ containers: arr, loader: false }, () => {
+                this.rerender(true, true);
             });
         });
 
@@ -230,17 +213,13 @@ export default class AddRemoveLayout extends React.Component {
         return h;
     };
     setPos = (c) => {
-        if (this.positions) {
-            return;
-        }
-
         const pos = [];
         for (let f = 0; f < c.length; f += 1) {
             if (!pos.includes(c[f].y)) {
                 pos.push(c[f].y);
             }
         }
-        this.positions = [pos[0], pos[1], pos[2]].sort();
+        this.positions = pos.sort();
     };
 
     checkItem = (c, f) => {
@@ -255,7 +234,7 @@ export default class AddRemoveLayout extends React.Component {
                 if (f > 11) {
                     yT = this.positions[2];
                 }
-                if (cc.x === this.checkPositions[f] && cc.y === yT) {
+                if (cc.x === this.checkPositions[f] && cc.y >= yT) {
                     return true;
                 }
                 break;

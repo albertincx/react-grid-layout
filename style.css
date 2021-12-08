@@ -198,6 +198,8 @@ span a {
     border: none;
     font-size: 2em;
     padding: 22px;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .text-4 {
