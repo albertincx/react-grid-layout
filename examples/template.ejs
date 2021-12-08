@@ -1,15 +1,30 @@
-<!--
-  <%= banner ;%>
--->
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="UTF-8">
-    <script src="commons.js"></script>
-    <script src="<%= index ;%>-<%= source ;%>.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="commons.js?v=<%= time ;%>"></script>
+    <script src="<%= source ;%>.js?v=<%= time ;%>"></script>
+    <link rel="stylesheet" type="text/css" href="style.css?v=<%= time ;%>" />
     <title>Puzzle Fun</title>
+    <script
+            crossorigin
+            src="https://unpkg.com/react@17/umd/react.production.min.js"
+    ></script>
+    <script
+            crossorigin
+            src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/@sberdevices/assistant-client@3.4.2/umd/assistant.min.js"></script>
+    <script>
+        window.assistant.createAssistant({
+            getState: () => {
+                return {};
+            },
+        });
+    </script>
+    <script src="https://cdn-app.sberdevices.ru/shared-static/
+0.0.0/polyfills/cookie-ls-polyfill.min.js"></script>
 </head>
 <body>
 <div id="content"></div>

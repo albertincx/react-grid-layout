@@ -327,13 +327,16 @@ div.container {
 }
 
 .fixedbutton {
-    position: fixed;
-    bottom: 40px;
-    margin-left: -119px;
-    left: 50%;
-    width: 170px;
-    padding: 0 36px;
-    font-size: 1.3em;
+    /*position: fixed;*/
+    /*bottom: 100px;*/
+    /*margin-left: -119px;*/
+    /*left: 50%;*/
+    width: 230px;
+    /*padding: 0 36px;*/
+    /*font-size: 1.3em;*/
+    margin-top: 30px;
     background-color: #fff461;
     color: #1984c3;
+    padding: 8px 24px;
+    font-size: 1.4em;
 }

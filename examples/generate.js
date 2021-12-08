@@ -20,6 +20,7 @@ data.forEach(function(datum, i) {
   datum.previous = data[i - 1];
   datum.next = data[i + 1];
   datum.version = version;
+  datum.time = new Date().getTime();
   const html = ejs.render(tpl, datum);
   fs.writeFileSync(__dirname + "/" + datum.source + ".html", html);
 });

@@ -375,6 +375,11 @@ export default class AddRemoveLayout extends React.Component {
                                 </div>
                         )}
                         <Gallery onSelect={this.onSelect} dir={this.state.dir} img={this.state.img} />
+                        {!this.state.items.length ? (
+                                <div className="text1 fixedbutton text-31 button font" onClick={this.randomPuzzle}>
+                                    (?) Случайный пазл
+                                </div>
+                        ) : null}
                         {this.state.win ? (
                                 <div className="wrapper">
                                     <div className="modal">
@@ -404,11 +409,6 @@ export default class AddRemoveLayout extends React.Component {
                         <br />
                         <br />
                     </div>
-                    {!this.state.items.length ? (
-                            <div className="text1 fixedbutton text-31 button font" onClick={this.randomPuzzle}>
-                                Случайный пазл
-                            </div>
-                    ) : null}
                 </div>
         );
     }
