@@ -323,7 +323,8 @@ div.container {
     margin-top: 0.2em;
 }
 .title {
-    font-size: 2.2em;
+    font-size: 2.7em;
+    padding: 10px;
 }
 
 .fixedbutton {
