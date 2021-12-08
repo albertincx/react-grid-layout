@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'adigiana-ultra';
+    src: url('/css/adigiana-ultra.woff2') format('woff2'),
+    url('/css/adigiana-ultra.woff') format('woff'),
+    url('/css/adigiana-ultra.ttf')  format('truetype');
+}
 html {
     width: 100%;
     height: 100%;
@@ -27,7 +33,7 @@ body {
     position: absolute;
     width: 100px;
 }
-.button {
+.button1 {
     display: inline-block;
     padding: 0.75rem 1.25rem;
     border-radius: 10rem;
@@ -40,7 +46,7 @@ body {
     overflow: hidden;
     z-index: 1;
 }
-.button:after {
+.button1:after {
     content: "";
     position: absolute;
     bottom: 0;
@@ -51,7 +57,7 @@ body {
     border-radius: 10rem;
     z-index: -2;
 }
-.button:before {
+.button1:before {
     content: "";
     position: absolute;
     bottom: 0;
@@ -63,25 +69,11 @@ body {
     border-radius: 10rem;
     z-index: -1;
 }
-.button:hover {
+.button1:hover {
     color: #fff;
 }
-.button:hover:before {
+.button1:hover:before {
     width: 100%;
-}
-.center1 {
-    /*position: fixed;*/
-    /*height: 100%;*/
-    /*overflow-y: scroll;*/
-    /*width: calc(100% - 20px);*/
-    /*padding: 10px;*/
-    /*left: 0;*/
-}
-.container {
-    padding-top: 50px;
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
 }
 
 h1 {
@@ -148,19 +140,19 @@ span a {
     66%  {background-position: -100%  66%,0%   66% ,100% 66% }
     100% {background-position:    0% 100%,100% 100%,200% 100%}
 }
-.game {
-    /*padding: 20px;*/
-    margin-top: 20px;
-}
 .game.even {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: wrap;
     align-content: space-between;
     justify-content: space-evenly;
 }
+.game > div {
+    flex: 1 1 110px;
+    padding: 0 10px;
+    max-height: 120px;
+}
 .dir {
     width: 100%;
-    /*height: 100px;*/
 }
 .img {
     width: auto;
@@ -171,18 +163,16 @@ span a {
     width: 100%;
     height: auto;
 }
-
+.font {
+    font-family: 'adigiana-ultra', sans-serif;
+}
 .text {
+    font-family: 'adigiana-ultra', sans-serif;
     display: inline-block;
-    /*font-size: 300px;*/
-    /*line-height: 84%;*/
-    /*font-family: Modak;*/
     padding-left: 7px;
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    /*margin-top: calc(50vh - 100px);*/
-    text-shadow: 7px 7px 0px #d2d2d22e;
 }
 
 .text-1 {
@@ -297,7 +287,53 @@ h1 {
 }
 .version {
     position: absolute;
+    position: absolute;
+    top: -24px;
+    left: 12px;
+    color: #343434;
 }
-.react-grid-layout {
-    /*padding-left: 20px;*/
+
+div.container {
+    text-align: center;
+    margin: 20px auto 0;
+}
+
+.button {
+    display: inline-block;
+    background-color: #1984c3;
+    color: #fff461;
+    font-size: 2em;
+    /*font-family: Courier, sans-serif;*/
+    padding: .2em 2em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 0.5em;
+    border-bottom: 0.25em solid #0f5177;
+    -moz-transition: 0.1s;
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+    /*box-shadow: 0 2px 3px #ccc;*/
+    position: relative;
+    width: 150px;
+}
+
+.button:hover {
+    background-color: #1e9feb;
+    border-bottom-width: 0;
+    margin-top: 0.2em;
+}
+.title {
+    font-size: 2.2em;
+}
+
+.fixedbutton {
+    position: fixed;
+    bottom: 40px;
+    margin-left: -119px;
+    left: 50%;
+    width: 170px;
+    padding: 0 36px;
+    font-size: 1.3em;
+    background-color: #fff461;
+    color: #1984c3;
 }

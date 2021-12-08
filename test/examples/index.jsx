@@ -3,7 +3,7 @@ import _ from "lodash";
 
 import WidthProvider from "../../lib/components/WidthProvider";
 import Responsive from "../../lib/ResponsiveReactGridLayout";
-import Gallery from "./Gallery";
+import Gallery, { srcs } from "./Gallery";
 
 require("./Puzzler/Puzzler").default();
 require("./Puzzler/PuzzleGame").default();
@@ -87,7 +87,7 @@ export default class AddRemoveLayout extends React.Component {
 
     rerender = (upd = false, shuffleOn = false) => {
         if (upd) {
-            const {containers} = this.state;
+            const { containers } = this.state;
             const arr = [...containers];
             if (shuffleOn && !(window && window.__shuffle_disable)) {
                 shuffle(arr);
@@ -103,6 +103,7 @@ export default class AddRemoveLayout extends React.Component {
             this.canvasDraw();
         }
     };
+
     canvasDraw = () => {
         const { containers } = this.state;
         if (!this.refsC[`testn0`] || !getContainerFunc) {
@@ -161,6 +162,16 @@ export default class AddRemoveLayout extends React.Component {
             e.preventDefault();
         }
         this.onSubmit(null, true);
+    };
+    randomPuzzle = () => {
+        const add = Object.keys(srcs);
+        shuffle(add);
+        const dir = this.state.dir?.name || add[0];
+        const add2 = srcs[dir];
+        shuffle(add2);
+        this.setState({ img: `${dir}/img${add2[0]}.jpg` }, () => {
+            this.onSubmit();
+        });
     };
     onSubmit = (e, shuf = false) => {
         if (e) {
@@ -292,12 +303,15 @@ export default class AddRemoveLayout extends React.Component {
 
     // We're using the cols coming back from this to calculate where to add new items.
     onBreakpointChange(breakpoint, cols) {
+        const {img} = this.state;
         this.setState({
             breakpoint: breakpoint,
             cols: cols,
             items: []
         }, () => {
-            this.rerender(true);
+            if (img) {
+                this.rerender(true);
+            }
         });
     }
 
@@ -390,6 +404,11 @@ export default class AddRemoveLayout extends React.Component {
                         <br />
                         <br />
                     </div>
+                    {!this.state.items.length ? (
+                            <div className="text1 fixedbutton text-31 button font" onClick={this.randomPuzzle}>
+                                Случайный пазл
+                            </div>
+                    ) : null}
                 </div>
         );
     }

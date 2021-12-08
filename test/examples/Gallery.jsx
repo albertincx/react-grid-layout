@@ -1,19 +1,13 @@
 import React from "react";
 import _ from "lodash";
 
-require("./Puzzler/Puzzler").default();
-require("./Puzzler/PuzzleGame").default();
-/**
- * This layout demonstrates how to use a grid with a dynamic number of elements.
- */
-
 const namesRUS = ["Мультики", "Животные", "Цветы"];
 const names = [
     "cartoon",
     "animal",
     "flowers"
 ];
-const srcs = {
+export const srcs = {
     cartoon: [1, 2, 3, 4, 5],
     animal: [1, 2, 3],
     flowers: [1, 2]
@@ -50,8 +44,6 @@ export default class Gallery extends React.Component {
     };
 
     componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>) {
-        // console.log("test", this.state, this.props);
-        // this.props.cb();
         if (this.props.dir !== prevProps.dir) {
             if (this.props.dir) {
                 let items = [];
@@ -76,14 +68,14 @@ export default class Gallery extends React.Component {
                     <div ref={eel => this.refsC[`test${i}`] = eel} onClick={e => {
                         this.props.onSelect(el);
                     }}>
-                        <div className="dir">
+                        <div className="dir container">
                             {el.src ? (
                                     <div className="img">
                                         <img src={el.src} alt="" />
                                     </div>
                             ) : (
                                     <>
-                                        <div className="text text-3">{namesRUS[el.ii]}</div>
+                                        <div className="text1 text-31 button font">{namesRUS[el.ii]}</div>
                                     </>
                             )}
                         </div>
@@ -130,7 +122,7 @@ export default class Gallery extends React.Component {
         return (
                 <div className="center2">
                     {!this.props.dir ? (
-                            <div className="text-3">
+                            <div className="text text-3 font title">
                                 Категории пазлов
                                 <span className="version">версия 0.12</span>
                             </div>
