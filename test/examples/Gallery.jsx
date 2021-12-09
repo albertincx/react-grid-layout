@@ -1,16 +1,18 @@
 import React from "react";
 import _ from "lodash";
 
-const namesRUS = ["Мультики", "Животные", "Цветы"];
+const namesRUS = ["Мультики", "Кино", "Животные", "Цветы"];
 const names = [
     "cartoon",
+    "movie",
     "animal",
     "flowers"
 ];
 export const srcs = {
     cartoon: [1, 2, 3, 4, 5],
-    animal: [1, 2, 3],
-    flowers: [1, 2]
+    movie: [1, 2, 3, 4, 5],
+    animal: [1, 2, 3, 4, 5],
+    flowers: [1, 2, 3, 4, 5]
 };
 
 export default class Gallery extends React.Component {
