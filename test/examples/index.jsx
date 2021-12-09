@@ -193,7 +193,7 @@ export default class AddRemoveLayout extends React.Component {
         }
         this.positions = null;
         this.setState({ loader: true });
-        var url = this.state.img || "cartoon/img5.jpg";
+        var url = this.state.img?.src || "cartoon/img5.jpg";
         var dest = document.createElement("div");
         dest.id = "dest";
         dest.className = "dest";
@@ -326,7 +326,7 @@ export default class AddRemoveLayout extends React.Component {
             field = "dir";
         }
         this.play();
-        this.setState({ [field]: el.src ? el.src : el }, () => {
+        this.setState({ [field]: el }, () => {
             if (el.src) {
                 this.onSubmit();
             }
@@ -382,11 +382,16 @@ export default class AddRemoveLayout extends React.Component {
                         ) : null}
                         {this.state.win ? (
                                 <div className="wrapper">
-                                    <div className="modal">
+                                    <div className="modal font">
+                                        <h1 className="nt">Поздравляем</h1>
                                         <span className="emoji round">🏆</span>
-                                        <h1>Поздравляем</h1>
                                         <h1>Время: {this.state.timeEnd}</h1>
-                                        <a href="#" className="modal-btn" onClick={this.endGame}>Рестарт</a>
+                                        <div className="dir container">
+                                            <button className="text1 text-31 button font" onClick={this.endGame}>Рестарт</button>
+                                        </div>
+                                        <div className="dir container">
+                                            <button className="text1 text-31 button font" onClick={this.nextGame}>Следующий пазл</button>
+                                        </div>
                                     </div>
                                     <div id="confetti-wrapper">
                                     </div>
@@ -413,6 +418,18 @@ export default class AddRemoveLayout extends React.Component {
         );
     }
 
+    nextGame = () => {
+        window.confetti.stop();
+        const dir = this.state.dir?.name;
+        const add2 = srcs[dir];
+        let i = this.state.img.ii + 1;
+        if (i === 5) {
+            i = 0;
+        }
+        this.setState({ win: false, img: {src: `${dir}/img${add2[i]}.jpg`, ii: i} }, () => {
+            this.onSubmit();
+        });
+    }
     endGame = () => {
         window.confetti.stop();
         this.setState({ win: false }, () => {

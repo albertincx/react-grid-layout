@@ -2,37 +2,44 @@
     font-family: 'adigiana-ultra';
     src: url('/css/adigiana-ultra.woff2') format('woff2'),
     url('/css/adigiana-ultra.woff') format('woff'),
-    url('/css/adigiana-ultra.ttf')  format('truetype');
+    url('/css/adigiana-ultra.ttf') format('truetype');
 }
+
 html {
     width: 100%;
     height: 100%;
 }
+
 body {
     padding: 20px;
-    background: rgb(2,0,36);
-    background: linear-gradient(193deg, rgba(2,0,36,1) 6%, rgba(10,77,48,1) 100%, rgba(7,112,112,1) 100%, rgba(0,212,255,1) 100%);
+    background: rgb(2, 0, 36);
+    background: linear-gradient(193deg, rgba(2, 0, 36, 1) 6%, rgba(10, 77, 48, 1) 100%, rgba(7, 112, 112, 1) 100%, rgba(0, 212, 255, 1) 100%);
     background-size: 310% 310%;
 }
+
 .center {
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .center2 {
     text-align: center;
 }
+
 .center3 {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .new {
     margin: 0 auto;
     top: 40%;
     position: absolute;
     width: 100px;
 }
+
 .button1 {
     display: inline-block;
     padding: 0.75rem 1.25rem;
@@ -46,6 +53,7 @@ body {
     overflow: hidden;
     z-index: 1;
 }
+
 .button1:after {
     content: "";
     position: absolute;
@@ -57,6 +65,7 @@ body {
     border-radius: 10rem;
     z-index: -2;
 }
+
 .button1:before {
     content: "";
     position: absolute;
@@ -69,9 +78,11 @@ body {
     border-radius: 10rem;
     z-index: -1;
 }
+
 .button1:hover {
     color: #fff;
 }
+
 .button1:hover:before {
     width: 100%;
 }
@@ -80,7 +91,8 @@ h1 {
     text-transform: uppercase;
     font-size: 0.8rem;
     margin-bottom: 2rem;
-    color: #777;
+    /*color: #777;*/
+    color: #2f566c;
 }
 
 span {
@@ -89,6 +101,7 @@ span {
     font-size: 0.7rem;
     color: #777;
 }
+
 span a {
     font-size: 0.7rem;
     color: #999;
@@ -98,74 +111,91 @@ span a {
 
 .progress-6 {
     padding-top: 0;
-    width:120px;
-    height:22px;
+    width: 120px;
+    height: 22px;
     border-radius: 20px;
-    color:#514b82;
-    border:2px solid;
+    color: #514b82;
+    border: 2px solid;
     /*position: relative;*/
 }
+
 .progress-6::before {
-    content:"";
+    content: "";
     position: absolute;
-    margin:2px;
-    inset:0 100% 0 0;
+    margin: 2px;
+    inset: 0 100% 0 0;
     border-radius: inherit;
-    background:currentColor;
-    animation:p6 1.5s infinite;
+    background: currentColor;
+    animation: p6 1.5s infinite;
 }
+
 @keyframes p6 {
-    100% {inset:0}
+    100% {
+        inset: 0
+    }
 }
 
 .progress-9 {
     padding-top: 0;
     --r1: 154%;
     --r2: 68.5%;
-    width:60px;
-    height:60px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
-    background:
-            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%) center left,
-            radial-gradient(var(--r1) var(--r2) at bottom,#269af2 79.5%,#0000 80%) center center,
-            radial-gradient(var(--r1) var(--r2) at top   ,#0000 79.5%,#269af2 80%) center right,
-            #ccc;
+    background: radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #269af2 80%) center left,
+    radial-gradient(var(--r1) var(--r2) at bottom, #269af2 79.5%, #0000 80%) center center,
+    radial-gradient(var(--r1) var(--r2) at top, #0000 79.5%, #269af2 80%) center right,
+    #ccc;
     background-size: 50.5% 220%;
-    background-position: -100% 0%,0% 0%,100% 0%;
-    background-repeat:no-repeat;
-    animation:p9 2s infinite linear;
+    background-position: -100% 0%, 0% 0%, 100% 0%;
+    background-repeat: no-repeat;
+    animation: p9 2s infinite linear;
 }
+
 @keyframes p9 {
-    33%  {background-position:    0% 33% ,100% 33% ,200% 33% }
-    66%  {background-position: -100%  66%,0%   66% ,100% 66% }
-    100% {background-position:    0% 100%,100% 100%,200% 100%}
+    33% {
+        background-position: 0% 33%, 100% 33%, 200% 33%
+    }
+    66% {
+        background-position: -100% 66%, 0% 66%, 100% 66%
+    }
+    100% {
+        background-position: 0% 100%, 100% 100%, 200% 100%
+    }
 }
+
 .game.even {
     display: flex;
     flex-flow: wrap;
     align-content: space-between;
     justify-content: space-evenly;
 }
+
 .game > div {
     flex: 1 1 110px;
     padding: 0 10px;
     max-height: 120px;
 }
+
 .dir {
     width: 100%;
 }
+
 .img {
     width: auto;
     max-width: 220px;
     height: 150px;
 }
+
 .img img {
     width: 100%;
     height: auto;
 }
+
 .font {
     font-family: 'adigiana-ultra', sans-serif;
 }
+
 .text {
     font-family: 'adigiana-ultra', sans-serif;
     display: inline-block;
@@ -197,8 +227,6 @@ span a {
 }
 
 
-
-
 :root {
     --border-color: #D7DBE3;
     font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -214,24 +242,30 @@ span a {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 70vh;
+    height: 100%;
     position: absolute;
     width: 100%;
     background: #000000b0;
     z-index: 1;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .modal {
     min-width: 30%;
     margin: 0 auto;
     border: 1px solid var(--border-color);
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.16);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.16);
     background-color: #fff;
     border-radius: 0.25rem;
     padding: 2rem;
     z-index: 1;
 }
-
+.modal button {
+    width: 260px;
+    padding: 0;
+}
 .emoji {
     display: block;
     text-align: center;
@@ -258,12 +292,16 @@ h1 {
     margin-bottom: 20px;
 }
 
-
+h1 {
+    font-size: 1.4em;
+}
+h1.nt {
+    margin-top: 0;
+}
 .modal-btn {
     display: block;
     margin: 0 -2rem -2rem -2rem;
     padding: 1rem 2rem;
-    font-size: .75rem;
     text-transform: uppercase;
     text-align: center;
     color: #fff;
@@ -271,7 +309,9 @@ h1 {
     border-radius: 0 0 .25rem .25rem;
     background-color: var(--green);
     text-decoration: none;
+    font-size: 2em;
 }
+
 .sound {
     padding: 22px;
     width: 32px;
@@ -279,14 +319,16 @@ h1 {
     background-repeat: no-repeat;
     background-position: 50% 50%;
 }
+
 .sound-on {
     background-image: url("soundOn.png");
 }
+
 .sound-off {
     background-image: url("soundOff.png");
 }
+
 .version {
-    position: absolute;
     position: absolute;
     top: -24px;
     left: 12px;
@@ -303,7 +345,6 @@ div.container {
     background-color: #1984c3;
     color: #fff461;
     font-size: 2em;
-    /*font-family: Courier, sans-serif;*/
     padding: .2em 2em;
     text-decoration: none;
     text-transform: uppercase;
@@ -312,7 +353,6 @@ div.container {
     -moz-transition: 0.1s;
     -webkit-transition: 0.1s;
     transition: 0.1s;
-    /*box-shadow: 0 2px 3px #ccc;*/
     position: relative;
     width: 150px;
 }
@@ -320,29 +360,32 @@ div.container {
 .button:hover {
     background-color: #1e9feb;
     border-bottom-width: 0;
-    margin-top: 0.2em;
 }
+
+.fixedbutton:hover {
+    background-color: #fff461;
+    border-bottom-width: 0;
+}
+
 .title {
     font-size: 2.7em;
     padding: 10px;
 }
 
 .fixedbutton {
-    /*position: fixed;*/
-    /*bottom: 100px;*/
-    /*margin-left: -119px;*/
-    /*left: 50%;*/
     width: 230px;
-    /*padding: 0 36px;*/
-    /*font-size: 1.3em;*/
     margin-top: 50px;
     background-color: #fff461;
     color: #1984c3;
     padding: 8px 24px;
     font-size: 1.4em;
 }
+
 @media screen and (max-width: 400px) {
     .img {
         max-width: 140px;
+    }
+    .modal {
+        min-width: 60%;
     }
 }

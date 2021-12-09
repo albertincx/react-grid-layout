@@ -39,7 +39,7 @@ export default class Gallery extends React.Component {
 
     createItems = () => {
         let items = [];
-        for (let i = 0; i < 3; i += 1) {
+        for (let i = 0; i < 4; i += 1) {
             items = this.onAddItem(items, true, i);
         }
         this.setState({ items });
