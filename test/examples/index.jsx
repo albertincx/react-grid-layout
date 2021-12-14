@@ -54,6 +54,7 @@ export default class AddRemoveLayout extends React.Component {
 
     constructor(props) {
         super(props);
+        const ua = navigator.userAgent;
         this.state = {
             items: [],
             newCounter: 0,
@@ -62,7 +63,8 @@ export default class AddRemoveLayout extends React.Component {
             soundOn: true,
             win: false,
             timeStart: new Date().getTime(),
-            timeEnd: 0
+            timeEnd: 0,
+            isSB: ua.toLowerCase().includes("sberbox"),
         };
         this.checkPositions = [
             0, 2, 4, 6, 8, 10,
@@ -119,12 +121,44 @@ export default class AddRemoveLayout extends React.Component {
         }
     };
 
+    onClick = (indx) => (el) => {
+        const { click1, isSB } = this.state;
+        if (!isSB) {
+            return;
+        }
+        const newIndx = `${indx}`;
+        if (click1 === newIndx) {
+            return;
+        }
+        if (click1) {
+            this.replaceItems(click1, indx);
+            return;
+        }
+        this.setState({ click1: newIndx });
+    };
+
+    replaceItems = (a, b) => {
+        const { items } = this.state;
+        const fromA = parseInt(a);
+        const toB = parseInt(b);
+        const itemA = { ...items[fromA] };
+        const itemB = { ...items[toB] };
+        items[toB] = itemA;
+        items[fromA] = itemB;
+        // console.log(items);
+        this.setState({
+            items: [...items],
+            click1: "",
+            click2: ""
+        });
+    };
+
     createElement(el) {
         const i = el.i;
+        const ind = i.replace("n", "");
         return (
-                <div key={i} data-grid={el}>
-                    <div ref={eel => this.refsC[`test${i}`] = eel}>
-                    </div>
+                <div tabIndex={ind} key={i} data-grid={el} onClick={this.onClick(ind)}>
+                    <div ref={eel => this.refsC[`test${i}`] = eel} />
                 </div>
         );
     }
@@ -147,8 +181,6 @@ export default class AddRemoveLayout extends React.Component {
         diff -= hours * (1000 * 60 * 60);
         var mins = Math.floor(diff / (1000 * 60));
         var sec = Math.floor(diff / (1000));
-        // diff -= mins * (1000 * 60);
-        // outputs: "00:39:30"
         const h = `${hours < 10 ? "0" : ""}${hours}`;
         const m = `${mins < 10 ? "0" : ""}${mins}`;
         const s = `${sec < 10 ? "0" : ""}${sec}`;
@@ -169,7 +201,7 @@ export default class AddRemoveLayout extends React.Component {
         const dir = this.state.dir?.name || add[0];
         const add2 = srcs[dir];
         shuffle(add2);
-        this.setState({ img: `${dir}/img${add2[0]}.jpg` }, () => {
+        this.setState({ img: {src: `${dir}/img${add2[0]}.jpg`} }, () => {
             this.onSubmit();
         });
     };
@@ -281,7 +313,6 @@ export default class AddRemoveLayout extends React.Component {
                 h: this.getHeight(),
                 minH: 0.8,
                 isResizable: false,
-                onDragStop: this.onDragStop,
                 baseName
             });
             return items;
@@ -303,7 +334,7 @@ export default class AddRemoveLayout extends React.Component {
 
     // We're using the cols coming back from this to calculate where to add new items.
     onBreakpointChange(breakpoint, cols) {
-        const {img} = this.state;
+        const { img } = this.state;
         this.setState({
             breakpoint: breakpoint,
             cols: cols,
@@ -387,10 +418,14 @@ export default class AddRemoveLayout extends React.Component {
                                         <span className="emoji round">🏆</span>
                                         <h1>Время: {this.state.timeEnd}</h1>
                                         <div className="dir container">
-                                            <button className="text1 text-31 button font" onClick={this.endGame}>Рестарт</button>
+                                            <button className="text1 text-31 button font"
+                                                    onClick={this.endGame}>Рестарт
+                                            </button>
                                         </div>
                                         <div className="dir container">
-                                            <button className="text1 text-31 button font" onClick={this.nextGame}>Следующий пазл</button>
+                                            <button className="text1 text-31 button font"
+                                                    onClick={this.nextGame}>Следующий пазл
+                                            </button>
                                         </div>
                                     </div>
                                     <div id="confetti-wrapper">
@@ -426,10 +461,10 @@ export default class AddRemoveLayout extends React.Component {
         if (i === 5) {
             i = 0;
         }
-        this.setState({ win: false, img: {src: `${dir}/img${add2[i]}.jpg`, ii: i} }, () => {
+        this.setState({ win: false, img: { src: `${dir}/img${add2[i]}.jpg`, ii: i } }, () => {
             this.onSubmit();
         });
-    }
+    };
     endGame = () => {
         window.confetti.stop();
         this.setState({ win: false }, () => {
