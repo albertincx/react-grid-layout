@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <script src="commons.js?v=1639078897247"></script>
+    <script src="index.js?v=1639078897247"></script>
+    <link rel="stylesheet" type="text/css" href="style.css?v=1639078897247" />
+    <title>Puzzle Fun</title>
+    <script
+            crossorigin
+            src="https://unpkg.com/react@17/umd/react.production.min.js"
+    ></script>
+    <script
+            crossorigin
+            src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
+    ></script>
+    <script src="https://unpkg.com/@sberdevices/assistant-client@3.4.2/umd/assistant.min.js"></script>
+    <script>
+        window.assistant.createAssistant({
+            getState: () => {
+                return {};
+            },
+        });
+    </script>
+    <script src="https://cdn-app.sberdevices.ru/shared-static/
+0.0.0/polyfills/cookie-ls-polyfill.min.js"></script>
+</head>
+<body>
+<div id="content"></div>
+<audio controls id="audio" style="display: none">
+    <source src="untitled.wav" type="audio/mpeg">
+    <source src="untitled.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
+<audio controls id="audio2" style="display: none">
+    <source src="WIN.wav" type="audio/mpeg">
+    <source src="WIN.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
+</body>
+</html>
