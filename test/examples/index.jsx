@@ -31,7 +31,7 @@ function shuffle(a) {
 
 const heights = [{ d: 2, s2: 0.6, s: 0.9, m: 1, m2: 1.5 }, { d: 200, s2: 60, s: 90, m: 100, m2: 150 }];
 
-window.getContainerFuncHeight = (canvas = false) => {
+window.getHeight = (canvas = false) => {
     const _h = heights[canvas ? 1 : 0];
     let h = _h.d;
     if (window.innerWidth < 1200) {
@@ -75,35 +75,30 @@ export default class AddRemoveLayout extends React.Component {
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
+        this.moved = {};
     }
 
     componentDidMount() {
         // eslint-disable-next-line no-undef
         if (Puzzler.support()) {
-            //
-            // this.onSubmit();
         } else {
             document.body.innerHTML = "<h1>Sorry, but you browser doesn't support \"Canvas\". Please, use modern browser such as Firefox, Opera, Safari or Chrome</h1>";
         }
     }
 
-    rerender = (upd = false, shuffleOn = false) => {
-        if (upd) {
-            const { containers } = this.state;
-            const arr = [...containers];
-            if (shuffleOn && !(window && window.__shuffle_disable)) {
-                shuffle(arr);
-            }
-            let items = [];
-            for (let i = 0; i < arr.length; i += 1) {
-                items = this.onAddItem(items, arr[i].baseName);
-            }
-            this.setState({ items, containers: arr }, () => {
-                this.canvasDraw();
-            });
-        } else {
-            this.canvasDraw();
+    rerender = (shuffleOn = false) => {
+        const { containers } = this.state;
+        const arr = [...containers];
+        if (shuffleOn && !(window && window.__shuffle_disable)) {
+            shuffle(arr);
         }
+        let items = [];
+        for (let i = 0; i < arr.length; i += 1) {
+            items = this.onAddItem(items, arr[i].baseName);
+        }
+        this.setState({ items, containers: arr }, () => {
+            this.canvasDraw();
+        });
     };
 
     canvasDraw = () => {
@@ -115,8 +110,15 @@ export default class AddRemoveLayout extends React.Component {
         let item1 = 0;
         for (let i = 0; i < containers.length; i += 1) {
             const iitem = containers[i];
-            const cc = getContainerFunc(iitem.x, iitem.y, iitem.w, iitem.h, true, ww);
+            const cc = getContainerFunc(iitem.x, iitem.y, iitem.w, iitem.h, true, ww, iitem.baseName);
+            const cAnv = cc.container.querySelectorAll("canvas")[0];
+            var dataURLA = cAnv.toDataURL();
+            const imgA = new Image();
+            imgA.src = dataURLA;
             this.refsC[`testn${item1}`]?.appendChild(cc.container);
+            const cB = this.refsC[`testn${item1}`].querySelectorAll("canvas")[0];
+            const cBc = cB.getContext("2d");
+            cBc.drawImage(imgA, 0, 0);
             item1 += 1;
         }
     };
@@ -138,16 +140,25 @@ export default class AddRemoveLayout extends React.Component {
     };
 
     replaceItems = (a, b) => {
-        const { items } = this.state;
-        const fromA = parseInt(a);
-        const toB = parseInt(b);
-        const itemA = { ...items[fromA] };
-        const itemB = { ...items[toB] };
-        items[toB] = itemA;
-        items[fromA] = itemB;
-        // console.log(items);
+        const cellAInt = parseInt(a);
+        const cellBInt = parseInt(b);
+        const baseNameA = `testn${cellAInt}`;
+        const baseNameB = `testn${cellBInt}`;
+        if (this.refsC[baseNameA] && this.refsC[baseNameB]) {
+            let cA = this.refsC[baseNameA].querySelectorAll("canvas")[0];
+            let cB = this.refsC[baseNameB].querySelectorAll("canvas")[0];
+            var dataURLA = cA.toDataURL();
+            var dataURLB = cB.toDataURL();
+            const imgA = new Image();
+            const imgB = new Image();
+            imgA.src = dataURLA;
+            imgB.src = dataURLB;
+            const cBc = cB.getContext("2d");
+            const cAc = cA.getContext("2d");
+            cBc.drawImage(imgA, 0, 0);
+            cAc.drawImage(imgB, 0, 0);
+        }
         this.setState({
-            items: [...items],
             click1: "",
             click2: ""
         });
@@ -221,19 +232,6 @@ export default class AddRemoveLayout extends React.Component {
             e.preventDefault();
         }
         this.play();
-        if (shuf) {
-            this.setState({ loader: true, items: [] });
-            setTimeout(() => {
-                this.positions = null;
-                this.setState({
-                    loader: false,
-                    timeStart: new Date().getTime()
-                }, () => {
-                    this.rerender(true, true);
-                });
-            }, 500);
-            return;
-        }
         this.positions = null;
         this.setState({ loader: true });
         var url = this.state.img?.src || "cartoon/img5.jpg";
@@ -251,20 +249,14 @@ export default class AddRemoveLayout extends React.Component {
                 arr.push({ ...containers[i] });
             });
             this.setState({ containers: arr, loader: false }, () => {
-                this.rerender(true, true);
+                this.rerender(true);
             });
         });
 
 
     };
     getHeight = () => {
-        const wh = this.refsC[`testn0`]?.clientWidth;
-        if (wh) {
-            return wh;
-        }
-        const h = window.getContainerFuncHeight();
-        // console.log("h ", h);
-        return h;
+        return window.getHeight();
     };
     setPos = (c) => {
         const pos = [];
@@ -319,12 +311,12 @@ export default class AddRemoveLayout extends React.Component {
             items = items.concat({
                 i: "n" + items.length,
                 x: (items.length * 2) % (this.state.cols || 12),
-                y: Infinity, // puts it at the bottom
+                y: 2, // puts it at the bottom
                 w: 2,
                 h: this.getHeight(),
                 minH: 0.8,
                 isResizable: false,
-                baseName
+                baseName,
             });
             return items;
         }
@@ -339,7 +331,7 @@ export default class AddRemoveLayout extends React.Component {
             items: []
         }, () => {
             if (img) {
-                this.rerender(true);
+                this.rerender();
             }
         });
     }
@@ -375,6 +367,7 @@ export default class AddRemoveLayout extends React.Component {
     };
 
     render() {
+        const cols = { lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 };
         return (
                 <div className="center1">
                     <div className="center2">
@@ -437,7 +430,7 @@ export default class AddRemoveLayout extends React.Component {
                                     onLayoutChange={this.onLayoutChange}
                                     onBreakpointChange={this.onBreakpointChange}
                                     {...this.props}
-                                    cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                                    cols={cols}
                             >
                                 {_.map(this.state.items, el => this.createElement(el))}
                             </ResponsiveReactGridLayout>

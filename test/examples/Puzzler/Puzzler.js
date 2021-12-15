@@ -99,7 +99,7 @@ var Puzzler = function(
 
   image.src = imageSrc;
 
-  function makePiece(x, y, pieceWidth, pieceHeight, ret, ww) {
+  function makePiece(x, y, pieceWidth, pieceHeight, ret, ww, BN) {
 
     var pieceRelation;
     if (!ret) {
@@ -140,7 +140,7 @@ var Puzzler = function(
     var canvas = document.createElement('canvas');
     canvas.width = ww || 250;
     // canvas.width = pieceWidth;
-    canvas.height = window.getContainerFuncHeight(true);
+    canvas.height = window.getHeight(true);
     // canvas.height = pieceHeight;
     var canvasContext = canvas.getContext('2d');
 
@@ -167,6 +167,7 @@ var Puzzler = function(
     // console.log('xW', xW)
     // console.log('xH', xH)
     var container = document.createElement('div');
+    container.setAttribute('id', BN)
     container.style.cssText = 'position:absolute;height:' + canvas.height +
       'px;width:' + canvas.width + 'px';
     container.appendChild(canvas);
