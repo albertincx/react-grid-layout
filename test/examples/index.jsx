@@ -64,7 +64,7 @@ export default class AddRemoveLayout extends React.Component {
             win: false,
             timeStart: new Date().getTime(),
             timeEnd: 0,
-            isSB: ua.toLowerCase().includes("sberbox"),
+            isSB: ua.toLowerCase().includes("sberbox")
         };
         this.checkPositions = [
             0, 2, 4, 6, 8, 10,
@@ -195,13 +195,24 @@ export default class AddRemoveLayout extends React.Component {
         }
         this.onSubmit(null, true);
     };
-    randomPuzzle = () => {
+
+    randomPuzzle = (e, state) => {
         const add = Object.keys(srcs);
         shuffle(add);
         const dir = this.state.dir?.name || add[0];
         const add2 = srcs[dir];
         shuffle(add2);
-        this.setState({ img: {src: `${dir}/img${add2[0]}.jpg`} }, () => {
+        const ind = add2[0];
+        const img = { rand: true, src: `${dir}/img${ind}.jpg`, dir, ii: ind };
+        let newState = { img };
+        if (state) {
+            if (state.rand) {
+                newState.win = false;
+            } else {
+                newState = state;
+            }
+        }
+        this.setState(newState, () => {
             this.onSubmit();
         });
     };
@@ -317,19 +328,6 @@ export default class AddRemoveLayout extends React.Component {
             });
             return items;
         }
-
-        this.setState({
-            // Add a new item. It must have a unique key!
-            items: this.state.items.concat({
-                i: "n" + this.state.newCounter,
-                x: (this.state.items.length * 2) % (this.state.cols || 12),
-                y: Infinity, // puts it at the bottom
-                w: 2,
-                h: 2
-            }),
-            // Increment the counter to ensure key is always unique.
-            newCounter: this.state.newCounter + 1
-        });
     };
 
     // We're using the cols coming back from this to calculate where to add new items.
@@ -455,15 +453,15 @@ export default class AddRemoveLayout extends React.Component {
 
     nextGame = () => {
         window.confetti.stop();
-        const dir = this.state.dir?.name;
+        const { rand } = this.state.img;
+        const dir = this.state.dir?.name || this.state.img.dir;
         const add2 = srcs[dir];
         let i = this.state.img.ii + 1;
         if (i === 5) {
             i = 0;
         }
-        this.setState({ win: false, img: { src: `${dir}/img${add2[i]}.jpg`, ii: i } }, () => {
-            this.onSubmit();
-        });
+        const img = { src: `${dir}/img${add2[i]}.jpg`, dir, ii: i };
+        this.randomPuzzle(null, rand ? { rand: true } : { win: false, img });
     };
     endGame = () => {
         window.confetti.stop();
