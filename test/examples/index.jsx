@@ -19,7 +19,7 @@ let getContainerFunc;
  * @param {Array} a items An array containing the items.
  */
 function shuffle(a) {
-    var j, x, i;
+    let j, x, i;
     for (i = a.length - 1; i > 0; i--) {
         j = Math.floor(Math.random() * (i + 1));
         x = a[i];
@@ -75,12 +75,13 @@ export default class AddRemoveLayout extends React.Component {
         this.refsC = {};
         this.onBreakpointChange = this.onBreakpointChange.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
-        this.moved = {};
+        this.click1 = "";
     }
 
     componentDidMount() {
         // eslint-disable-next-line no-undef
         if (Puzzler.support()) {
+            //
         } else {
             document.body.innerHTML = "<h1>Sorry, but you browser doesn't support \"Canvas\". Please, use modern browser such as Firefox, Opera, Safari or Chrome</h1>";
         }
@@ -111,24 +112,25 @@ export default class AddRemoveLayout extends React.Component {
         for (let i = 0; i < containers.length; i += 1) {
             const iitem = containers[i];
             const cc = getContainerFunc(iitem.x, iitem.y, iitem.w, iitem.h, true, ww, iitem.baseName);
-            const cAnv = cc.container.querySelectorAll("canvas")[0];
-            var dataURLA = cAnv.toDataURL();
-            const imgA = new Image();
-            imgA.src = dataURLA;
-            this.refsC[`testn${item1}`]?.appendChild(cc.container);
-            const cB = this.refsC[`testn${item1}`].querySelectorAll("canvas")[0];
-            const cBc = cB.getContext("2d");
-            cBc.drawImage(imgA, 0, 0);
+            const baseN = `testn${item1}`;
+            if (this.refsC[baseN]) {
+                const cAnv = cc.container.querySelectorAll("canvas")[0];
+                const dataURLA = cAnv.toDataURL();
+                const imgA = new Image();
+                imgA.src = dataURLA;
+                this.refsC[baseN].appendChild(cc.container);
+            }
             item1 += 1;
         }
     };
 
-    onClick = (indx) => (el) => {
-        const { click1, isSB } = this.state;
+    onClick = (indx) => () => {
+        const { click1 = this.click1, isSB } = this.state;
         if (!isSB) {
             return;
         }
         const newIndx = `${indx}`;
+        this.play();
         if (click1 === newIndx) {
             return;
         }
@@ -136,39 +138,91 @@ export default class AddRemoveLayout extends React.Component {
             this.replaceItems(click1, indx);
             return;
         }
-        this.setState({ click1: newIndx });
+        this.click1 = newIndx;
     };
 
+    checkCanvas = () => {
+        let match = 0;
+        const { items } = this.state;
+        for (let i = 0; i < 17; i += 1) {
+            const cA = this.refsC[`testn${i}`].querySelectorAll("canvas")[0];
+            let bn = cA.getAttribute("data-id");
+            if (!bn) {
+                bn = cA.getAttribute("id");
+            }
+            if (bn) {
+                const idx = bn.replace("item", "");
+                const ok = items[idx].baseName === `item${i}`;
+                if (ok) {
+                    match += 1;
+                }
+            }
+        }
+        if (match === items.length) {
+            this.youWin();
+        }
+    };
     replaceItems = (a, b) => {
         const cellAInt = parseInt(a);
         const cellBInt = parseInt(b);
         const baseNameA = `testn${cellAInt}`;
         const baseNameB = `testn${cellBInt}`;
         if (this.refsC[baseNameA] && this.refsC[baseNameB]) {
-            let cA = this.refsC[baseNameA].querySelectorAll("canvas")[0];
-            let cB = this.refsC[baseNameB].querySelectorAll("canvas")[0];
-            var dataURLA = cA.toDataURL();
-            var dataURLB = cB.toDataURL();
+            const cA = this.refsC[baseNameA].querySelectorAll("canvas")[0];
+            const cB = this.refsC[baseNameB].querySelectorAll("canvas")[0];
+            const dataURLA = cA.toDataURL();
+            const dataURLB = cB.toDataURL();
             const imgA = new Image();
             const imgB = new Image();
             imgA.src = dataURLA;
             imgB.src = dataURLB;
-            const cBc = cB.getContext("2d");
-            const cAc = cA.getContext("2d");
-            cBc.drawImage(imgA, 0, 0);
-            cAc.drawImage(imgB, 0, 0);
+            setTimeout(() => {
+                const cB1 = this.refsC[baseNameB].querySelectorAll("canvas")[0];
+                cB1.setAttribute("data-id", `item${cellAInt}`);
+                const cBc1 = cB1.getContext("2d");
+                cBc1.drawImage(imgA, 0, 0);
+            }, 50);
+            setTimeout(() => {
+                const cA1 = this.refsC[baseNameA].querySelectorAll("canvas")[0];
+                const cAc1 = cA1.getContext("2d");
+                cA1.setAttribute("data-id", `item${cellBInt}`);
+                cAc1.drawImage(imgB, 0, 0);
+            }, 50);
         }
-        this.setState({
-            click1: "",
-            click2: ""
-        });
+        setTimeout(this.checkCanvas, 101);
+        this.click1 = "";
+    };
+
+    add = (indx) => (e) => {
+        if (this.state.isSB) {
+            return;
+        }
+        const keyValue = e.which; //enter key
+        if (keyValue === 40 || keyValue === 38) {
+            let tabindex = e.target.getAttribute("tabindex");
+            if (keyValue === 38) { //down arrow 40
+                tabindex++;
+                if (tabindex === 18) {
+                    tabindex = 0;
+                }
+            } else { //up arrow 38
+                tabindex--;
+            }
+            if (tabindex < 0) {
+                tabindex = 17;
+            }
+            document.querySelector("[tabindex=\"" + tabindex + "\"]")?.focus();
+        }
+        if (e.keyCode === 13 || e.keyCode === 32) {
+            this.onClick(indx)();
+        }
     };
 
     createElement(el) {
         const i = el.i;
         const ind = i.replace("n", "");
         return (
-                <div tabIndex={ind} key={i} data-grid={el} onClick={this.onClick(ind)}>
+                <div tabIndex={ind} key={i} data-grid={el} onClick={this.onClick(ind)} onKeyDown={this.add(ind)}>
                     <div ref={eel => this.refsC[`test${i}`] = eel} />
                 </div>
         );
@@ -186,12 +240,12 @@ export default class AddRemoveLayout extends React.Component {
     };
 
     youWin = (win) => {
-        var dt2 = new Date();
-        var diff = (dt2.getTime() - this.state.timeStart);
-        var hours = Math.floor(diff / (1000 * 60 * 60));
+        const dt2 = new Date();
+        let diff = (dt2.getTime() - this.state.timeStart);
+        const hours = Math.floor(diff / (1000 * 60 * 60));
         diff -= hours * (1000 * 60 * 60);
-        var mins = Math.floor(diff / (1000 * 60));
-        var sec = Math.floor(diff / (1000));
+        const mins = Math.floor(diff / (1000 * 60));
+        const sec = Math.floor(diff / (1000));
         const h = `${hours < 10 ? "0" : ""}${hours}`;
         const m = `${mins < 10 ? "0" : ""}${mins}`;
         const s = `${sec < 10 ? "0" : ""}${sec}`;
@@ -204,7 +258,7 @@ export default class AddRemoveLayout extends React.Component {
         if (e) {
             e.preventDefault();
         }
-        this.onSubmit(null, true);
+        this.onSubmit(true);
     };
 
     randomPuzzle = (e, state) => {
@@ -227,22 +281,28 @@ export default class AddRemoveLayout extends React.Component {
             this.onSubmit();
         });
     };
-    onSubmit = (e, shuf = false) => {
-        if (e) {
-            e.preventDefault();
-        }
+
+    onSubmit = (shuf = false) => {
         this.play();
         this.positions = null;
         this.setState({ loader: true });
-        var url = this.state.img?.src || "cartoon/img5.jpg";
-        var dest = document.createElement("div");
-        dest.id = "dest";
-        dest.className = "dest";
-        document.body.appendChild(dest);
+        const url = this.state.img?.src || "cartoon/img5.jpg";
+        let dest = document.getElementById("dest");
+        if (!dest) {
+            dest = document.createElement("div");
+            dest.id = "dest";
+            dest.className = "dest";
+            document.body.appendChild(dest);
+        }
+        if (shuf) {
+            this.setState({ win: false, loader: false }, () => {
+                this.rerender(true);
+            });
+            return;
+        }
         // eslint-disable-next-line no-undef
         new PuzzleGame(dest, url, false, (images, countY, countX, getContainer, containers) => {
             getContainerFunc = getContainer;
-            window.confetti.stop();
             const arr = [];
             Object.keys(containers).forEach(i => {
                 containers[i].baseName = i;
@@ -252,8 +312,6 @@ export default class AddRemoveLayout extends React.Component {
                 this.rerender(true);
             });
         });
-
-
     };
     getHeight = () => {
         return window.getHeight();
@@ -316,7 +374,7 @@ export default class AddRemoveLayout extends React.Component {
                 h: this.getHeight(),
                 minH: 0.8,
                 isResizable: false,
-                baseName,
+                baseName
             });
             return items;
         }
@@ -436,6 +494,9 @@ export default class AddRemoveLayout extends React.Component {
                             </ResponsiveReactGridLayout>
                         </div>
                     </div>
+                    {!this.state.items.length ? (
+                            <span className="version">версия 0.14</span>
+                    ) : null}
                     <div>
                         <br />
                         <br />

@@ -139,16 +139,11 @@ var Puzzler = function(
 
     var canvas = document.createElement('canvas');
     canvas.width = ww || 250;
-    // canvas.width = pieceWidth;
     canvas.height = window.getHeight(true);
-    // canvas.height = pieceHeight;
     var canvasContext = canvas.getContext('2d');
 
     let xW = canvas.width;
     let xH = canvas.height;
-    // console.log(xH, xW)
-    // xW = width;
-    // xH = height;
     canvasContext.drawImage(
       image,
       originalX, // original x
@@ -160,20 +155,12 @@ var Puzzler = function(
       xW, // destination width
       xH, // destination height
     );
-    // console.log('x', originalX)
-    // console.log('y', originalY)
-    // console.log('width', width)
-    // console.log('height', height)
-    // console.log('xW', xW)
-    // console.log('xH', xH)
     var container = document.createElement('div');
-    container.setAttribute('id', BN)
+    canvas.setAttribute('id', BN)
     container.style.cssText = 'position:absolute;height:' + canvas.height +
       'px;width:' + canvas.width + 'px';
     container.appendChild(canvas);
-
     canvas.style.cssText = 'position:absolute;top:0;left:0';
-
     var piece = {};
     piece[self.pieceKey(x, y)] = {
       canvas: canvas,
@@ -210,7 +197,6 @@ var Puzzler = function(
 };
 
 Puzzler.prototype = {
-
   /**
    *
    * @param x
