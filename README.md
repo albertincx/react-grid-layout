@@ -9,5 +9,5 @@ https://github.com/doochik/Puzzler
 https://github.com/CoderZ90/confetti/blob/main/confetti.js
 
 ### Todo
-[] Show win on TV version
-[] Show win after restart
+ - [ ] Show win on TV version
+ - [ ] Show win after restart
