@@ -388,3 +388,24 @@ div.container {
         min-width: 60%;
     }
 }
+@media screen and (min-width: 1280px) {
+    .button {
+        width: 360px;
+    }
+    .fixedbutton, .modal button {
+        width: 500px;
+    }
+    .fixedbutton,.button,.title,.text-3, .modal h1 {
+        font-size: 3em;
+    }
+    .title {
+        font-size: 4em;
+    }
+    #content {
+        margin-top: 20px;
+    }
+    .img {
+        max-width: 290px;
+    }
+
+}
