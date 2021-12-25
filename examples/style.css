@@ -331,9 +331,6 @@ h1.nt {
 }
 
 .version {
-    position: absolute;
-    top: -24px;
-    left: 12px;
     color: #343434;
 }
 
